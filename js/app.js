@@ -69,11 +69,14 @@ plt.rcParams['axes.unicode_minus'] = False
 async function handleRequest() {
     if (isRunning) return;
     const query = document.getElementById('userInput').value;
-    const apiKey = document.getElementById('apiKey').value;
+    // 从 localStorage 获取 API Key（设置页保存的）
+    const apiKey = localStorage.getItem('deepseek_api_key');
     const loader = document.getElementById('loader');
     
-    if (!apiKey || fileManager.files.length === 0) {
-        if (!apiKey) return alert("⚠️ 请先填写 DeepSeek API Key！\n\n获取方式：\n1. 访问 https://platform.deepseek.com\n2. 注册/登录账号\n3. 在 API Keys 页面创建新的密钥\n4. 复制密钥填入左侧输入框");
+    if (!apiKey) {
+        return alert("⚠️ 请先在设置页面配置 API Key！\n\n1. 返回首页\n2. 点击左下角'设置'\n3. 填写 DeepSeek API Key 并保存");
+    }
+    if (fileManager.files.length === 0) {
         return alert("请先上传文件（Excel 或 CSV）");
     }
 
