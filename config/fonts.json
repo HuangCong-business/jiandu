@@ -1,0 +1,8 @@
+{
+    "fonts": [
+        {"family": "sans-serif", "name": "系统默认"},
+        {"family": "'Microsoft YaHei'", "name": "微软雅黑"},
+        {"family": "'SimHei'", "name": "黑体"}
+    ],
+    "default": "sans-serif"
+}

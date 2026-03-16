@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简牍 (Jian Du) - 智能数据语义工坊</title>
+    <link rel="stylesheet" href="css/style.css?v=20260316">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1c23;
+            min-height: 100vh;
+            font-family: 'Microsoft YaHei', sans-serif;
+            display: flex;
+        }
+
+        /* 左侧边栏 - 深色背景 */
+        .sidebar {
+            width: 280px;
+            background: #1a1c23;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+
+        /* Logo 设计 */
+        .logo-container {
+            margin-bottom: 50px;
+        }
+
+        .logo-main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #3d5a80 50%, #667eea 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            text-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+            100% { background-position: 0% center; }
+        }
+
+        .logo-sub {
+            font-size: 12px;
+            color: #94a3b8;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        /* 书法图片效果 */
+        .calligraphy {
+            width: calc(100% + 60px);
+            margin: 20px -30px 0 -30px;
+            text-align: center;
+        }
+
+        .calligraphy-img {
+            width: 100%;
+            max-width: 240px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            opacity: 0.15;
+            filter: brightness(0) invert(1);
+        }
+
+        /* 底部链接 */
+        .bottom-links {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid #3f414d;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .bottom-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .bottom-link:hover {
+            color: #e2e8f0;
+            background: #2d2f39;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            background: #fdfcf8;
+            min-height: 100vh;
+            padding: 60px 80px;
+            overflow-y: auto;
+        }
+
+        /* Hero 区域 - 艺术字设计 */
+        .hero {
+            text-align: center;
+            padding: 80px 60px;
+            background: white;
+            border-radius: 24px;
+            border: 2px solid #e2e8f0;
+            margin-bottom: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .hero-title {
+            font-size: 56px;
+            font-weight: 900;
+            letter-spacing: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #3d5a80 50%, #667eea 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .hero-title-sub {
+            font-size: 14px;
+            color: #94a3b8;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .hero-slogan {
+            font-size: 20px;
+            color: #64748b;
+            letter-spacing: 4px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .hero-slogan strong {
+            color: #3d5a80;
+            font-weight: 700;
+        }
+
+        .hero-version {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #3d5a80);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* 功能卡片 */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .action-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 40px 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .action-card:hover {
+            border-color: #667eea;
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.2);
+        }
+
+        .action-icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .action-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .action-desc {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+
+        /* 历史记录 */
+        .history-section {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: 1px;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #dc2626;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .history-item:hover {
+            border-color: #667eea;
+            background: #f0f9ff;
+            transform: translateX(5px);
+        }
+
+        .history-query {
+            font-size: 14px;
+            color: #1e293b;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .file-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .file-tag {
+            background: #e0e7ff;
+            color: #4f46e5;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #cbd5e1;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        /* 滚动条 */
+        .main-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        @media (max-width: 1200px) {
+            .action-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 30px 20px; }
+            .hero-title { font-size: 40px; letter-spacing: 8px; }
+            .action-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 左侧边栏 -->
+    <aside class="sidebar">
+        <!-- Logo -->
+        <div class="logo-container">
+            <div class="logo-main">
+                <div class="logo">简牍</div>
+                <div class="logo-sub">JIAN DU</div>
+            </div>
+        </div>
+
+        <!-- 书法图片 -->
+        <div class="calligraphy">
+            <img class="calligraphy-img" src="言出法随.png" alt="言出法随">
+        </div>
+
+        <!-- 底部链接 -->
+        <div class="bottom-links">
+            <a href="workspace.html" class="bottom-link">
+                <span>←</span>
+                <span>工作空间</span>
+            </a>
+            <a href="settings.html" class="bottom-link">
+                <span>⚙️</span>
+                <span>设置</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- Hero 区域 -->
+        <div class="hero">
+            <div class="hero-title">简牍</div>
+            <div class="hero-title-sub">JIAN DU</div>
+            <div class="hero-slogan">
+                <strong>言出法随</strong> · 让复杂数据化繁为简
+            </div>
+            <div class="hero-version">v2.0.3</div>
+        </div>
+
+        <!-- 功能卡片 -->
+        <div class="action-grid">
+            <div class="action-card" onclick="window.location.href='workspace.html'">
+                <span class="action-icon">📁</span>
+                <div class="action-title">开始新分析</div>
+                <div class="action-desc">上传 Excel 或 CSV 文件<br>用自然语言描述分析需求</div>
+            </div>
+            
+            <div class="action-card" onclick="alert('🚧 模板库开发中...\n\n即将提供常用分析模板')">
+                <span class="action-icon">📋</span>
+                <div class="action-title">模板库</div>
+                <div class="action-desc">使用预设模板<br>快速开始常见分析任务</div>
+            </div>
+            
+            <div class="action-card" onclick="scrollToHistory()">
+                <span class="action-icon">📜</span>
+                <div class="action-title">历史记录</div>
+                <div class="action-desc">查看历史数据<br>点击记录可直接加载</div>
+            </div>
+        </div>
+
+        <!-- 历史记录 -->
+        <div class="history-section" id="historySection">
+            <div class="section-header">
+                <div class="section-title">📚 最近分析</div>
+                <span id="historyCount" class="badge">0</span>
+            </div>
+            <div id="historyList" class="history-list">
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <div>暂无历史记录</div>
+                    <div style="font-size: 12px; margin-top: 8px; color: #94a3b8;">开始第一次分析后，记录会自动显示在这里</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <div style="text-align: center; margin-top: 50px; padding-top: 25px; border-top: 2px solid #e2e8f0; color: #94a3b8; font-size: 12px;">
+            <div>🔒 数据本地处理 · 安全隐私保护</div>
+            <div style="margin-top: 6px;">Powered by Pyodide + DeepSeek AI</div>
+        </div>
+    </main>
+
+    <script>
+        let db = null;
+        const DB_NAME = 'JianDuDB';
+        const STORE_NAME = 'analysisHistory';
+        
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 1);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => { db = request.result; resolve(db); };
+                request.onupgradeneeded = (event) => {
+                    const database = event.target.result;
+                    if (!database.objectStoreNames.contains(STORE_NAME)) {
+                        database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+            });
+        }
+        
+        async function getHistory(limit = 10) {
+            if (!db) await initDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction([STORE_NAME], 'readonly');
+                const store = tx.objectStore(STORE_NAME);
+                const index = store.index('timestamp');
+                const request = index.openCursor(null, 'prev');
+                const results = [];
+                request.onsuccess = (event) => {
+                    const cursor = event.target.result;
+                    if (cursor && results.length < limit) {
+                        results.push(cursor.value);
+                        cursor.continue();
+                    } else {
+                        resolve(results);
+                    }
+                };
+            });
+        }
+        
+        async function renderHistoryList() {
+            const history = await getHistory(10);
+            const container = document.getElementById('historyList');
+            document.getElementById('historyCount').textContent = history.length;
+            
+            if (history.length === 0) return;
+            
+            container.innerHTML = history.map(record => {
+                const date = new Date(record.timestamp).toLocaleString('zh-CN', {
+                    month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+                return `
+                    <div class="history-item" onclick="window.location.href='workspace.html?action=load&id=${record.id}'">
+                        <div style="display:flex;justify-content:space-between;font-size:12px;color:#64748b;">
+                            <span>${date}</span>
+                            <span style="color:#3d5a80;font-weight:600;">点击加载 →</span>
+                        </div>
+                        <div class="history-query">${record.query}</div>
+                        <div class="file-tags">
+                            ${record.files.map(f => `<span class="file-tag">${f.type === 'csv' ? '📄' : '📜'} ${f.name}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function scrollToHistory() {
+            document.getElementById('historySection').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        window.addEventListener('DOMContentLoaded', async () => {
+            await initDB();
+            await renderHistoryList();
+        });
+    </script>
+</body>
+</html>
