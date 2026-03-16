@@ -24,42 +24,11 @@
             top: 0;
         }
 
-        .logo-container {
-            margin-bottom: 30px;
-        }
-
-        .logo-main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            font-size: 36px;
-            font-weight: 900;
-            letter-spacing: 14px;
-            color: #e0f2f1;
-        }
-
-        .logo-sub {
-            font-size: 11px;
-            color: #64748b;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            font-weight: 500;
-        }
-
-        .workspace-label {
-            font-size: 11px;
-            color: #94a3b8;
-            letter-spacing: 4px;
-            text-align: center;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #3f414d;
-        }
+        .logo-container { margin-bottom: 30px; }
+        .logo-main { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 20px; }
+        .logo { font-size: 36px; font-weight: 900; letter-spacing: 14px; color: #e0f2f1; }
+        .logo-sub { font-size: 11px; color: #64748b; letter-spacing: 6px; text-transform: uppercase; font-weight: 500; }
+        .workspace-label { font-size: 11px; color: #94a3b8; letter-spacing: 4px; text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #3f414d; }
 
         .module-card {
             background: #2d2f39;
@@ -76,355 +45,109 @@
             margin-bottom: 12px;
         }
 
-        .m-label {
-            font-size: 11px;
-            color: #94a3b8;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        .file-actions {
-            display: flex;
-            gap: 8px;
-        }
-
+        .m-label { font-size: 11px; color: #94a3b8; font-weight: 600; letter-spacing: 1px; }
+        .file-actions { display: flex; gap: 8px; }
         .action-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 28px; height: 28px; border-radius: 6px; border: none;
+            cursor: pointer; font-size: 16px; font-weight: bold;
+            transition: all 0.2s; display: flex; align-items: center; justify-content: center;
         }
+        .btn-add { background: linear-gradient(135deg, #3d5a80, #4a6fa5); color: white; }
+        .btn-add:hover { background: linear-gradient(135deg, #4a6fa5, #5a7fb5); transform: scale(1.08); box-shadow: 0 4px 12px rgba(61, 90, 128, 0.4); }
+        .btn-remove { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
+        .btn-remove:hover { background: linear-gradient(135deg, #ef4444, #f45555); transform: scale(1.08); box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4); }
 
-        .btn-add {
-            background: linear-gradient(135deg, #3d5a80, #4a6fa5);
-            color: white;
-        }
-
-        .btn-add:hover {
-            background: linear-gradient(135deg, #4a6fa5, #5a7fb5);
-            transform: scale(1.08);
-            box-shadow: 0 4px 12px rgba(61, 90, 128, 0.4);
-        }
-
-        .btn-remove {
-            background: linear-gradient(135deg, #dc2626, #ef4444);
-            color: white;
-        }
-
-        .btn-remove:hover {
-            background: linear-gradient(135deg, #ef4444, #f45555);
-            transform: scale(1.08);
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
-        }
-
-        .file-scroller {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .file-scroller::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .file-scroller::-webkit-scrollbar-track {
-            background: #1a1c23;
-            border-radius: 2px;
-        }
-
-        .file-scroller::-webkit-scrollbar-thumb {
-            background: #3f414d;
-            border-radius: 2px;
-        }
+        .file-scroller { max-height: 200px; overflow-y: auto; }
+        .file-scroller::-webkit-scrollbar { width: 4px; }
+        .file-scroller::-webkit-scrollbar-track { background: #1a1c23; border-radius: 2px; }
+        .file-scroller::-webkit-scrollbar-thumb { background: #3f414d; border-radius: 2px; }
 
         .file-item {
-            font-size: 12px;
-            background: #1a1c23;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 8px;
-            border-left: 3px solid #3d5a80;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            font-size: 12px; background: #1a1c23; padding: 12px; border-radius: 8px;
+            margin-top: 8px; border-left: 3px solid #3d5a80; transition: all 0.2s;
+            display: flex; justify-content: space-between; align-items: center;
         }
-
-        .file-item:hover {
-            background: #23252f;
-            border-left-color: #4a6fa5;
-            transform: translateX(3px);
-        }
-
-        .file-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-        }
-
-        .file-name {
-            color: #e2e8f0;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .file-meta {
-            font-size: 10px;
-            color: #64748b;
-            margin-left: 8px;
-        }
-
+        .file-item:hover { background: #23252f; border-left-color: #4a6fa5; transform: translateX(3px); }
+        .file-info { display: flex; align-items: center; gap: 8px; flex: 1; }
+        .file-name { color: #e2e8f0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .file-meta { font-size: 10px; color: #64748b; margin-left: 8px; }
         .btn-remove-file {
-            background: none;
-            border: none;
-            color: #64748b;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: all 0.2s;
+            background: none; border: none; color: #64748b; cursor: pointer;
+            font-size: 18px; padding: 4px 8px; border-radius: 4px; transition: all 0.2s;
         }
+        .btn-remove-file:hover { background: #ef4444; color: white; }
 
-        .btn-remove-file:hover {
-            background: #ef4444;
-            color: white;
-        }
-
-        .engine-state {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            color: #94a3b8;
-            margin-top: 20px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #f43f5e;
-        }
+        .engine-state { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #94a3b8; margin-top: 20px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #f43f5e; }
 
         .main-content {
-            margin-left: 280px;
-            flex: 1;
-            background: #fdfcf8;
-            min-height: 100vh;
-            padding: 40px;
-            overflow-y: auto;
+            margin-left: 280px; flex: 1; background: #fdfcf8;
+            min-height: 100vh; padding: 40px; overflow-y: auto;
         }
 
         .workspace-header {
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            border: 2px solid #e2e8f0;
-            margin-bottom: 25px;
+            background: white; padding: 30px; border-radius: 16px;
+            border: 2px solid #e2e8f0; margin-bottom: 25px;
         }
-
-        .workspace-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 10px;
-        }
-
-        .workspace-slogan {
-            font-size: 14px;
-            color: #64748b;
-        }
+        .workspace-title { font-size: 24px; font-weight: 700; color: #1e293b; margin-bottom: 10px; }
+        .workspace-slogan { font-size: 14px; color: #64748b; }
 
         .input-panel {
-            background: white;
-            border: 2px solid #3d5a80;
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            background: white; border: 2px solid #3d5a80; border-radius: 16px;
+            padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-
         textarea {
-            width: 100%;
-            height: 100px;
-            border: none;
-            font-size: 15px;
-            outline: none;
-            resize: none;
-            color: #1e293b;
-            font-family: 'Microsoft YaHei', sans-serif;
+            width: 100%; height: 100px; border: none; font-size: 15px;
+            outline: none; resize: none; color: #1e293b; font-family: 'Microsoft YaHei', sans-serif;
         }
-
         .panel-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #e2e8f0;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 15px; padding-top: 15px; border-top: 1px solid #e2e8f0;
         }
-
-        .tips {
-            font-size: 12px;
-            color: #64748b;
-        }
-
+        .tips { font-size: 12px; color: #64748b; }
         .btn-run {
-            background: #3d5a80;
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: 0.3s;
+            background: #3d5a80; color: white; border: none; padding: 12px 28px;
+            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.3s;
         }
-
-        .btn-run:hover {
-            background: #2c4a6b;
-            transform: translateY(-2px);
-        }
-
-        .btn-run:disabled {
-            background: #cbd5e1;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn-run:hover { background: #2c4a6b; transform: translateY(-2px); }
+        .btn-run:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; }
 
         .output-panel {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 30px;
-            min-height: 300px;
-        }
-
-        .add-btn {
-            background: #3d5a80;
-            color: white;
-            border: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .add-btn:hover {
-            background: #4a6fa5;
-            transform: scale(1.05);
+            background: white; border: 2px solid #e2e8f0; border-radius: 16px;
+            padding: 30px; min-height: 300px;
         }
 
         .back-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: #2d2f39;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 16px;
-            cursor: pointer;
-            font-size: 13px;
-            color: #e2e8f0;
-            z-index: 100;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            position: fixed; bottom: 20px; left: 20px; background: #2d2f39;
+            border: none; border-radius: 8px; padding: 10px 16px; cursor: pointer;
+            font-size: 13px; color: #e2e8f0; z-index: 100; transition: all 0.2s;
+            text-decoration: none; display: flex; align-items: center; gap: 8px;
         }
-
-        .back-btn:hover {
-            background: #3d5a80;
-            color: white;
-        }
+        .back-btn:hover { background: #3d5a80; color: white; }
 
         .loader-mask {
-            position: fixed;
-            inset: 0;
-            background: rgba(255,255,255,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
+            position: fixed; inset: 0; background: rgba(255,255,255,0.9);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
         }
-
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3d5a80;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            width: 50px; height: 50px; border: 5px solid #f3f3f3;
+            border-top: 5px solid #3d5a80; border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 20px;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loader-box { text-align: center; }
         .hidden { display: none !important; }
 
-        .preview-table-container {
-            margin-top: 15px;
-            max-height: 200px;
-            overflow: auto;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .preview-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-
-        .preview-table th {
-            background: #f1f5f9;
-            padding: 8px 12px;
-            text-align: left;
-            font-weight: 600;
-            color: #1e293b;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .preview-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #e2e8f0;
-            color: #475569;
-        }
-
+        .preview-table-container { margin-top: 15px; max-height: 200px; overflow: auto; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .preview-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .preview-table th { background: #f1f5f9; padding: 8px 12px; text-align: left; font-weight: 600; color: #1e293b; position: sticky; top: 0; z-index: 10; }
+        .preview-table td { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; color: #475569; }
         .preview-table tr:hover { background: #f8fafc; }
-
-        .badge {
-            background: #e0e7ff;
-            color: #4f46e5;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+        .badge { background: #e0e7ff; color: #4f46e5; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
     </style>
 </head>
 <body>
     <aside class="sidebar">
-        <!-- Logo -->
         <div class="logo-container">
             <div class="logo-main">
                 <div class="logo">简牍</div>
@@ -488,368 +211,6 @@
         </div>
     </div>
 
-    <script src="js/app.js?v=20260316"></script>
-    <script>
-        let pyodide = null;
-        let fileManager = { files: [] };
-        let isRunning = false;
-        let fontsOk = false;
-        const MAX_FIX = 3;
-
-        async function initPyodide() {
-            const status = document.getElementById('envStatus');
-            const dot = document.getElementById('envDot');
-            try {
-                const timeout = setTimeout(() => {
-                    status.textContent = "引擎启动过慢，请刷新页面";
-                    dot.style.background = "#f43f5e";
-                }, 45000);
-                status.textContent = "加载 Pyodide 核心...";
-                pyodide = await loadPyodide({ indexURL: './pyodide/' });
-                status.textContent = "安装数据科学包...";
-                await pyodide.loadPackage(['pandas', 'matplotlib', 'micropip']);
-                status.textContent = "配置 Excel 支持...";
-                await pyodide.runPythonAsync(`
-import micropip
-await micropip.install(['openpyxl', 'Pillow'])
-import matplotlib
-matplotlib.use('Agg')
-                `);
-                clearTimeout(timeout);
-                status.textContent = "引擎就绪";
-                dot.style.background = "#36b37e";
-            } catch (e) {
-                status.textContent = "引擎启动失败";
-                console.error("Pyodide Init Error:", e);
-            }
-        }
-
-        async function ensureFonts() {
-            if (fontsOk) return;
-            const fontBadge = document.getElementById('fontStatus');
-            try {
-                const res = await fetch('STXINWEI.TTF');
-                if (!res.ok) throw new Error("未找到字体文件");
-                const buffer = await res.arrayBuffer();
-                pyodide.FS.writeFile("custom_font.ttf", new Uint8Array(buffer));
-                await pyodide.runPythonAsync(`
-import matplotlib.font_manager as fm
-import matplotlib.pyplot as plt
-fm.fontManager.addfont("custom_font.ttf")
-plt.rcParams['font.family'] = fm.FontProperties(fname="custom_font.ttf").get_name()
-plt.rcParams['axes.unicode_minus'] = False
-                `);
-                fontsOk = true;
-                fontBadge.textContent = "汉字引擎：已就绪";
-            } catch (e) {
-                fontBadge.textContent = "汉字引擎：不可用";
-                console.warn("字体加载失败:", e);
-            }
-        }
-
-        async function handleRequest() {
-            if (isRunning) return;
-            const apiKey = localStorage.getItem('deepseek_api_key');
-            
-            if (!apiKey) {
-                return alert("⚠️ 请先在设置页面配置 API Key！\n\n1. 返回首页\n2. 点击左下角'设置'\n3. 填写 DeepSeek API Key");
-            }
-            if (fileManager.files.length === 0) {
-                return alert("请先上传文件（Excel 或 CSV）");
-            }
-
-            const query = document.getElementById('userInput').value;
-            const loader = document.getElementById('loader');
-
-            isRunning = true;
-            loader.classList.remove('hidden');
-
-            let plan = null;
-
-            try {
-                let lastErr = null;
-                let attempt = 0;
-
-                while (attempt < MAX_FIX) {
-                    try {
-                        const meta = await getMeta();
-                        plan = await fetchAI(query, meta, apiKey, lastErr);
-                        
-                        if (plan.needs_chart) await ensureFonts();
-
-                        const readCode = fileManager.files.map((f, i) => {
-                            const readFunc = f.type === 'csv' ? 'read_csv' : 'find_real_data';
-                            return `df${i+1} = ${readFunc}("${f.name}")`;
-                        }).join('\n');
-
-                        let sanitizedCode = plan.code;
-                        
-                        fileManager.files.filter(f => f.type === 'csv').forEach(f => {
-                            const safeName = f.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                            sanitizedCode = sanitizedCode.replace(
-                                new RegExp(`pd\\.read_excel\\s*\\(\\s*["']${safeName}["']`, 'g'),
-                                `read_csv("${f.name}"`
-                            );
-                        });
-                        
-                        fileManager.files.filter(f => f.type === 'excel').forEach(f => {
-                            const safeName = f.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                            sanitizedCode = sanitizedCode.replace(
-                                new RegExp(`pd\\.read_csv\\s*\\(\\s*["']${safeName}["']`, 'g'),
-                                `find_real_data("${f.name}"`
-                            );
-                        });
-
-                        console.log("=== AI 原始代码 ===", plan.code);
-                        console.log("=== 预处理后代码 ===", sanitizedCode);
-
-                        await pyodide.runPythonAsync(`
-import pandas as pd
-from openpyxl import load_workbook
-from openpyxl.drawing.image import Image as ExcelImg
-
-FILE_TYPES = {
-${fileManager.files.map((f, i) => `    "${f.name}": "${f.type}"`).join(',\n')}
-}
-
-def find_real_data(filename):
-    file_type = FILE_TYPES.get(filename, 'excel')
-    if file_type == 'csv':
-        return read_csv(filename)
-    try:
-        preview = pd.read_excel(filename, nrows=50, header=None)
-        header_row = 0
-        keywords = ['ID', 'id', '品名', '名称', '销售额', '利润', '单价', '数量']
-        for i, row in preview.iterrows():
-            if row.astype(str).str.contains('|'.join(keywords), case=False).any():
-                header_row = i
-                break
-        df = pd.read_excel(filename, header=header_row)
-        return df.dropna(how='all').dropna(axis=1, how='all')
-    except:
-        return pd.read_excel(filename)
-
-def read_csv(filename):
-    encodings = ['utf-8', 'gbk', 'gb2312', 'latin1']
-    for enc in encodings:
-        try:
-            df = pd.read_csv(filename, encoding=enc)
-            return df.dropna(how='all').dropna(axis=1, how='all')
-        except Exception as e:
-            continue
-    return pd.read_csv(filename)
-
-def embed_chart(filename, cell, sheet_name="分析报告"):
-    wb = load_workbook("final.xlsx")
-    ws = wb[sheet_name] if sheet_name in wb.sheetnames else wb.create_sheet(sheet_name)
-    ws.add_image(ExcelImg(filename), cell)
-    wb.save("final.xlsx")
-
-${readCode}
-
-${sanitizedCode}
-                        `);
-
-                        renderOutput(plan);
-                        break; 
-                    } catch (e) {
-                        lastErr = e.message;
-                        attempt++;
-                        if (attempt >= MAX_FIX) throw e; 
-                    }
-                }
-            } catch (e) {
-                console.error("详细错误:", e);
-                const errorHtml = `
-                    <div style="padding:20px; color:#f43f5e; background:#fff1f2; border-radius:12px; border:1px solid #fecaca;">
-                        <b>⚠️ 研读中断：</b><br><br>
-                        <div style="background:#fef2f2; padding:15px; border-radius:8px; font-family:monospace; font-size:13px; white-space:pre-wrap; max-height:300px; overflow-y:auto;">
-${e.message}
-                        </div>
-                        ${plan ? `<details style="margin-top:15px; font-size:13px; color:#64748b;">
-                            <summary style="cursor:pointer;">📝 查看 AI 生成的代码</summary>
-                            <div style="margin-top:10px; padding:10px; background:#1e293b; color:#e2e8f0; border-radius:8px; font-family:monospace; font-size:11px; overflow-x:auto; white-space:pre-wrap; max-height:400px; overflow-y:auto;">
-${plan.code}
-                            </div>
-                        </details>` : ''}
-                        <br>
-                        <small>💡 提示：如果连续报错，请尝试将任务分批次发送。</small>
-                    </div>`;
-                document.getElementById('resultContent').innerHTML = errorHtml;
-            } finally {
-                isRunning = false;
-                loader.classList.add('hidden');
-            }
-        }
-
-        async function fetchAI(query, meta, key, error = null) {
-            const controller = new AbortController();
-            const id = setTimeout(() => controller.abort(), 60000);
-
-            try {
-                const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        model: localStorage.getItem('deepseek_model') || 'deepseek-chat',
-                        messages: [
-                            {
-                                role: "system", 
-                                content: `你是一个 Python 数据专家。
-重要规则：
-1. 读取文件时必须根据文件类型选择函数：
-   - 文件标记为 (EXCEL) 或 (.xlsx) → 使用 find_real_data("文件名")
-   - 文件标记为 (CSV) 或 (.csv) → 使用 read_csv("文件名")
-2. 必须使用 pd.ExcelWriter('final.xlsx', engine='openpyxl') 处理多 Sheet
-3. 图表保存为 c1.png, c2.png 等，并调用 embed_chart("c1.png", "A1") 插入
-4. 输出必须是 JSON 格式：{"code": "python 代码", "explanation": "分析说明", "needs_chart": true/false}`
-                            },
-                            {role: "user", content: `任务：${query}\n\n结构上下文：\n${meta}${error ? `\n修正报错：${error}` : ""}`}
-                        ],
-                        response_format: { type: "json_object" }
-                    }),
-                    signal: controller.signal
-                });
-
-                clearTimeout(id);
-                if (res.status === 400) throw new Error("API 报错 (400)：请求过载。请分批提交任务。");
-                if (res.status === 401) throw new Error("API Key 无效 (401)！\n\n请在设置页面检查 API Key 是否正确");
-                if (!res.ok) throw new Error(`云端响应异常 (${res.status})`);
-
-                const d = await res.json();
-                let txt = d.choices[0].message.content.replace(/```json/g, '').replace(/```/g, '').trim();
-                return JSON.parse(txt);
-            } catch (e) {
-                if (e.name === 'AbortError') throw new Error("云端大脑研读超时，请检查网络或精简任务。");
-                throw e;
-            }
-        }
-
-        async function getMeta() {
-            let ctx = "";
-            for (let f of fileManager.files) {
-                const readFunc = f.type === 'csv' ? 'pd.read_csv' : 'pd.read_excel';
-                const res = await pyodide.runPythonAsync(`
-import pandas as pd; import json
-try:
-    df=${readFunc}("${f.name}", nrows=5)
-except:
-    df=${readFunc}("${f.name}", nrows=5, encoding='gbk')
-json.dumps({"cols":list(df.columns.astype(str)), "rows":len(df)})
-`);
-                const info = JSON.parse(res);
-                const typeLabel = f.type === 'csv' ? 'CSV' : 'EXCEL';
-                ctx += `文件【${f.name}】类型:${typeLabel} | ${info.rows}行，列：${info.cols.join(', ')}\n`;
-            }
-            return ctx;
-        }
-
-        function renderOutput(plan) {
-            const area = document.getElementById('resultContent');
-            let html = `<div style="padding:20px; background:#f0f9ff; border-radius:12px; line-height:1.6; border:1px solid #bae6fd;"><b>📊 分析简报：</b><br>${plan.explanation}</div>`;
-            
-            for (let i = 1; i <= 10; i++) {
-                const name = `c${i}.png`;
-                try {
-                    if(pyodide.FS.analyzePath(name).exists) {
-                        const b = pyodide.FS.readFile(name);
-                        html += `<div style="margin-top:20px; text-align:center;"><img src="${URL.createObjectURL(new Blob([b], {type:'image/png'}))}" style="max-width:100%; border-radius:8px; border:1px solid #e2e8f0;"></div>`;
-                    }
-                } catch(e){}
-            }
-            html += `<button class="btn-run" style="width:100%; margin-top:25px; padding:15px;" onclick="downloadFile()">📥 下载《简牍分析报告》</button>`;
-            area.innerHTML = html;
-        }
-
-        window.downloadFile = () => {
-            const data = pyodide.FS.readFile("final.xlsx");
-            const blob = new Blob([data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-            const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "简牍分析报告.xlsx"; a.click();
-        };
-
-        async function renderFileList() {
-            if (fileManager.files.length === 0) {
-                document.getElementById('fileList').innerHTML = '<div style="color:#64748b; font-size:12px; padding:20px; text-align:center;">暂无文件<br><span style="font-size:11px;">点击 + 添加文件</span></div>';
-                document.getElementById('analyzeBtn').disabled = true;
-                return;
-            }
-            
-            const html = await Promise.all(fileManager.files.map(async (f, idx) => {
-                let preview = '';
-                try {
-                    const readFunc = f.type === 'csv' ? 'pd.read_csv' : 'pd.read_excel';
-                    const res = await pyodide.runPythonAsync(`
-import pandas as pd; import json
-try:
-    df=${readFunc}("${f.name}", nrows=10)
-except:
-    df=${readFunc}("${f.name}", nrows=10, encoding='gbk')
-html = '<table class="preview-table"><thead><tr>'
-html += df.columns.map(c => '<th>' + String(c) + '</th>').join('')
-html += '</tr></thead><tbody>'
-for (const [_, row] of df.iterrows()) {
-    html += '<tr>' + row.map(v => '<td>' + String(v) + '</td>').join('') + '</tr>'
-}
-html += '</tbody></table>'
-json.dumps({"html": html, "shape": list(df.shape)})
-`);
-                    const info = JSON.parse(res);
-                    preview = `<div style="font-size:11px; color:#94a3b8; margin-top:6px;">${info.shape[0]}行×${info.shape[1]}列</div>${info.html}`;
-                } catch(e) {}
-                
-                return `<div class="file-item">
-                    <div class="file-info">
-                        <span style="font-size:16px;">${f.type === 'csv' ? '📄' : '📜'}</span>
-                        <div>
-                            <div class="file-name">${f.name}</div>
-                            <div class="file-meta">${f.type.toUpperCase()} · ${formatSize(f.size)}</div>
-                        </div>
-                    </div>
-                    <button onclick="removeFile(${idx})" class="btn-remove-file" title="移除文件">×</button>
-                </div>
-                ${preview}`;
-            }));
-            
-            document.getElementById('fileList').innerHTML = html.join('');
-            document.getElementById('analyzeBtn').disabled = false;
-        }
-
-        function formatSize(bytes) {
-            if (!bytes) return '0 B';
-            const k = 1024;
-            const sizes = ['B', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-        }
-
-        window.removeFile = async (idx) => {
-            const f = fileManager.files[idx];
-            try { pyodide.FS.unlink(f.name); } catch(e) {}
-            fileManager.files.splice(idx, 1);
-            await renderFileList();
-        };
-
-        window.clearAllFiles = async () => {
-            if (!confirm('确定要清除所有已上传的文件吗？')) return;
-            for (let f of fileManager.files) {
-                try { pyodide.FS.unlink(f.name); } catch(e) {}
-            }
-            fileManager.files = [];
-            await renderFileList();
-        };
-
-        document.getElementById('fileInput').onchange = async (e) => {
-            for (let f of e.target.files) {
-                const b = await f.arrayBuffer();
-                pyodide.FS.writeFile(f.name, new Uint8Array(b));
-                const ext = f.name.toLowerCase().split('.').pop();
-                fileManager.files.push({ name: f.name, type: ext === 'csv' ? 'csv' : 'excel', size: f.size });
-            }
-            await renderFileList();
-        };
-
-        document.getElementById('analyzeBtn').onclick = handleRequest;
-        document.addEventListener('DOMContentLoaded', initPyodide);
-    </script>
+    <script src="js/app.js?v=20260317"></script>
 </body>
 </html>
