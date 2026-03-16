@@ -172,30 +172,6 @@ def read_csv(filename):
     # 如果都失败，用 pandas 默认
     return pd.read_csv(filename)
 
-# === 完全覆盖 pandas 读取函数，添加智能路由 ===
-_original_read_excel = pd.read_excel
-_original_read_csv = pd.read_csv
-
-def _smart_read_excel(io, **kwargs):
-    """智能 read_excel: 如果文件是 CSV 格式，自动切换到 read_csv"""
-    if isinstance(io, str) and io in FILE_TYPES:
-        if FILE_TYPES[io] == 'csv':
-            print(f"⚠️ 自动纠正：检测到用 read_excel 读取 CSV 文件 '{io}'，已切换为 read_csv")
-            return read_csv(io)
-    return _original_read_excel(io, **kwargs)
-
-def _smart_read_csv(io, **kwargs):
-    """智能 read_csv: 如果文件是 Excel 格式，自动切换到 find_real_data"""
-    if isinstance(io, str) and io in FILE_TYPES:
-        if FILE_TYPES[io] == 'excel':
-            print(f"⚠️ 自动纠正：检测到用 read_csv 读取 Excel 文件 '{io}'，已切换为 find_real_data")
-            return find_real_data(io)
-    return _original_read_csv(io, **kwargs)
-
-# 替换 pandas 的读取函数
-pd.read_excel = _smart_read_excel
-pd.read_csv = _smart_read_csv
-
 def embed_chart(filename, cell, sheet_name="分析报告"):
     """物理插入图片"""
     wb = load_workbook("final.xlsx")
