@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仪表盘 - 简牍</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+            background: var(--sidebar-bg);
+            color: var(--text-inverse);
+            min-height: 100vh;
+        }
+
+        /* 导航栏 */
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 40px;
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--sidebar-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: var(--accent);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: white;
+        }
+
+        .user-email {
+            font-size: 14px;
+            color: var(--sidebar-muted);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--r-sm);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-inverse);
+            border: 1px solid var(--sidebar-border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 2px 8px rgba(201,64,50,0.25);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(201,64,50,0.35);
+        }
+
+        /* 主内容区 */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .welcome {
+            margin-bottom: 40px;
+        }
+
+        .welcome h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: var(--text-inverse);
+        }
+
+        .welcome p {
+            color: var(--sidebar-muted);
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--sidebar-hover);
+            padding: 24px;
+            border-radius: var(--r-lg);
+            border: 1px solid var(--sidebar-border);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--sidebar-muted);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-inverse);
+        }
+
+        .stat-value.success { color: #4CAF80; }
+        .stat-value.warning { color: #E8A020; }
+        .stat-value.danger  { color: var(--accent); }
+
+        .stat-sub {
+            font-size: 13px;
+            color: var(--sidebar-muted);
+        }
+
+        /* 套餐信息 */
+        .plan-card {
+            background: var(--sidebar-hover);
+            padding: 32px;
+            border-radius: var(--r-xl);
+            border: 2px solid var(--sidebar-border);
+            margin-bottom: 40px;
+        }
+
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .plan-name {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-inverse);
+        }
+
+        .plan-badge {
+            padding: 6px 16px;
+            border-radius: var(--r-full);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .plan-badge.free {
+            background: rgba(122,109,94,0.2);
+            color: var(--sidebar-muted);
+        }
+
+        .plan-badge.pro {
+            background: rgba(201,64,50,0.2);
+            color: var(--accent);
+        }
+
+        .plan-badge.enterprise {
+            background: rgba(201,64,50,0.2);
+            color: var(--accent);
+        }
+
+        .plan-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--sidebar-muted);
+        }
+
+        .feature-item .check {
+            color: #4CAF80;
+            font-size: 18px;
+        }
+
+        .plan-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* 激活码输入 */
+        .activate-section {
+            background: var(--sidebar-hover);
+            padding: 32px;
+            border-radius: var(--r-xl);
+            border: 1px solid var(--sidebar-border);
+            margin-bottom: 40px;
+        }
+
+        .activate-section h3 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: var(--text-inverse);
+        }
+
+        .activate-form {
+            display: flex;
+            gap: 12px;
+            max-width: 500px;
+        }
+
+        .activate-form input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--sidebar-bg);
+            border: 1px solid var(--sidebar-border);
+            border-radius: var(--r-sm);
+            color: var(--text-inverse);
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .activate-form input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        .activate-form input::placeholder {
+            color: var(--sidebar-muted);
+        }
+
+        /* 使用记录 */
+        .usage-section {
+            background: var(--sidebar-hover);
+            padding: 32px;
+            border-radius: var(--r-xl);
+            border: 1px solid var(--sidebar-border);
+        }
+
+        .usage-section h3 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--text-inverse);
+        }
+
+        .usage-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .usage-table th {
+            text-align: left;
+            padding: 12px;
+            font-size: 13px;
+            color: var(--sidebar-muted);
+            border-bottom: 1px solid var(--sidebar-border);
+        }
+
+        .usage-table td {
+            padding: 12px;
+            font-size: 14px;
+            color: var(--sidebar-text);
+            border-bottom: 1px solid rgba(46,35,25,0.5);
+        }
+
+        .usage-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tag {
+            padding: 4px 10px;
+            border-radius: var(--r-sm);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tag.analyze {
+            background: rgba(201,64,50,0.2);
+            color: var(--accent);
+        }
+
+        /* 消息提示 */
+        .message {
+            padding: 12px 16px;
+            border-radius: var(--r-sm);
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.error {
+            background: rgba(153,27,27,0.2);
+            border: 1px solid #991B1B;
+            color: #fca5a5;
+            display: block;
+        }
+
+        .message.success {
+            background: rgba(45,106,79,0.2);
+            border: 1px solid #2D6A4F;
+            color: #6ee7b7;
+            display: block;
+        }
+
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--sidebar-muted);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--sidebar-border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .nav { padding: 16px 20px; }
+            .user-email { display: none; }
+            .plan-header { flex-direction: column; gap: 16px; align-items: flex-start; }
+            .activate-form { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="nav">
+        <div class="logo">简牍</div>
+        <div class="nav-right">
+            <a href="/public/workspace.html" class="btn btn-primary">开始分析</a>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span class="user-email" id="userEmail">loading...</span>
+            </div>
+            <button class="btn btn-outline" onclick="logout()">退出</button>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main">
+        <div class="welcome">
+            <h1>欢迎回来 👋</h1>
+            <p>查看你的使用情况和订阅状态</p>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>加载数据中...</p>
+        </div>
+
+        <div id="content" style="display: none;">
+            <!-- 统计卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>今日剩余</h3>
+                    <div class="stat-value warning" id="dailyRemaining">-</div>
+                    <div class="stat-sub">次分析</div>
+                </div>
+                <div class="stat-card">
+                    <h3>本周使用</h3>
+                    <div class="stat-value success" id="weeklyUsage">-</div>
+                    <div class="stat-sub">次分析</div>
+                </div>
+                <div class="stat-card">
+                    <h3>总计节省</h3>
+                    <div class="stat-value" id="totalSaved">-</div>
+                    <div class="stat-sub">小时手动处理时间</div>
+                </div>
+            </div>
+
+            <!-- 套餐信息 -->
+            <div class="plan-card">
+                <div class="plan-header">
+                    <div>
+                        <div class="plan-name" id="planName">免费版</div>
+                        <div style="color: var(--sidebar-muted); font-size: 14px; margin-top: 4px;" id="planStatus">
+                            有效期至：-
+                        </div>
+                    </div>
+                    <span class="plan-badge free" id="planBadge">FREE</span>
+                </div>
+
+                <div class="plan-features">
+                    <div class="feature-item">
+                        <span class="check">✓</span>
+                        <span>每天 <strong id="dailyLimit">5</strong> 次分析</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="check">✓</span>
+                        <span>最大文件 <strong id="fileSizeLimit">10</strong> MB</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="check">✓</span>
+                        <span>基础模板库</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="check">✓</span>
+                        <span>社区支持</span>
+                    </div>
+                </div>
+
+                <div class="plan-actions">
+                    <a href="/public/pricing.html" class="btn btn-primary">升级到专业版</a>
+                    <button class="btn btn-outline" onclick="showActivateForm()">使用激活码</button>
+                </div>
+            </div>
+
+            <!-- 激活码输入 -->
+            <div class="activate-section" id="activateSection" style="display: none;">
+                <h3>🔑 激活专业版</h3>
+                <div id="activateMessage" class="message"></div>
+                <form class="activate-form" id="activateForm">
+                    <input type="text" id="activationCode" placeholder="输入激活码（如：JIANDU-XXXXXX）" required>
+                    <button type="submit" class="btn btn-primary">激活</button>
+                </form>
+            </div>
+
+            <!-- 使用记录 -->
+            <div class="usage-section">
+                <h3>📊 最近使用记录</h3>
+                <table class="usage-table">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>类型</th>
+                            <th>文件数</th>
+                            <th>Tokens</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usageTableBody">
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--sidebar-muted);">暂无记录</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = 'http://localhost:3001/api';
+
+        async function checkAuth() {
+            const token = localStorage.getItem('jiandu_auth_token');
+            const userStr = localStorage.getItem('jiandu_current_user');
+
+            if (!token || !userStr) {
+                window.location.href = '/public/login.html';
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                renderUser(data.user);
+            } catch {
+                logout();
+            }
+        }
+
+        function renderUser(user) {
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userAvatar').textContent = (user.username || user.email).charAt(0).toUpperCase();
+            document.getElementById('planName').textContent = user.role === 'admin' ? '管理员' : '普通用户';
+            document.getElementById('planBadge').textContent = user.role === 'admin' ? 'ADMIN' : 'FREE';
+            document.getElementById('planBadge').className = `plan-badge ${user.role === 'admin' ? 'pro' : 'free'}`;
+            document.getElementById('dailyLimit').textContent = '无限';
+            document.getElementById('dailyRemaining').textContent = '∞';
+            document.getElementById('fileSizeLimit').textContent = '50';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        }
+
+        function logout() {
+            localStorage.removeItem('jiandu_auth_token');
+            localStorage.removeItem('jiandu_current_user');
+            window.location.href = '/public/index.html';
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>

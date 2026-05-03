@@ -26,13 +26,51 @@ of the stable console.
       rel="stylesheet"
       href="https://unpkg.com/@xterm/xterm@5.4.0/css/xterm.css"
     />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐍</text></svg>"
       rel="icon"
     />
-    <script src="https://unpkg.com/@xterm/xterm@5.4.0/lib/xterm.js"></script>
-    <script src="https://unpkg.com/@xterm/addon-fit@0.9.0/lib/addon-fit.js"></script>
     <style>
+      /* ── 砚墨 (Ink Stone) CSS Variables ── */
+      :root {
+        --bg-base:       #FAF7F2;
+        --bg-surface:    #FFFFFF;
+        --bg-raised:     #F5F1EB;
+        --sidebar-bg:    #18120E;
+        --sidebar-hover: #221A14;
+        --sidebar-text:  #C4B49A;
+        --sidebar-muted: #7A6D5E;
+        --sidebar-border:#2E2319;
+        --text-primary:  #1A1209;
+        --text-secondary:#5C4F3D;
+        --text-muted:    #9B8F7E;
+        --text-inverse:  #FAF7F2;
+        --accent:        #C94032;
+        --accent-hover:  #B33529;
+        --accent-light:  #FAE9E7;
+        --accent-muted:  #E8C4BF;
+        --success-bg:    #E8F5EE;
+        --success-text:  #2D6A4F;
+        --warning-bg:    #FEF3E2;
+        --warning-text:  #92400E;
+        --error-bg:      #FEE2E2;
+        --error-text:    #991B1B;
+        --border:        #E8E1D8;
+        --border-strong:  #D4C9B8;
+        --border-focus:   #C94032;
+        --shadow-xs: 0 1px 2px rgba(26,18,9,0.04);
+        --shadow-sm: 0 2px 6px rgba(26,18,9,0.06);
+        --shadow-md: 0 4px 16px rgba(26,18,9,0.08);
+        --shadow-lg: 0 8px 32px rgba(26,18,9,0.12);
+        --shadow-xl: 0 16px 48px rgba(26,18,9,0.16);
+        --r-sm:  6px;
+        --r-md:  10px;
+        --r-lg:  14px;
+        --r-xl:  20px;
+        --r-full:9999px;
+      }
+
       * {
         margin: 0;
         padding: 0;
@@ -42,8 +80,8 @@ of the stable console.
       html,
       body {
         margin: 0;
-        background-color: #000000;
-        font-family: "Monaco", "Menlo", "Courier New", monospace;
+        background-color: #18120E;
+        font-family: 'Noto Sans SC', 'Monaco', 'Menlo', 'Courier New', monospace;
         overflow: hidden;
       }
 
@@ -91,13 +129,13 @@ of the stable console.
           scrollback: 2_000,
           fontSize: 18,
           lineHeight: 1.4,
-          fontFamily: "monospace",
+          fontFamily: "'Noto Sans SC', Monaco, Menlo, 'Courier New', monospace",
           theme: {
-            background: "#000000",
+            background: "#18120E",
             foreground: "rgba(255, 255, 255, 0.8)",
             cursor: "rgba(255, 255, 255, 0.8)",
-            selection: "#404040",
-            error: "#ff0000",
+            selection: "#2E2319",
+            error: "#C94032",
           },
         });
         window.term = term;

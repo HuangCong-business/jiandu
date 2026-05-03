@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 简牍</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        /* ================================================
+           砚墨设计系统 — 注册页覆盖样式
+           ================================================ */
+
+        body {
+            background: var(--sidebar-bg);
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+            color: var(--text-inverse);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        /* Logo */
+        .logo {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .logo-text {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+            background: none;
+            -webkit-text-fill-color: var(--accent);
+        }
+
+        .logo-sub {
+            font-size: 11px;
+            color: var(--text-inverse);
+            letter-spacing: 0.25em;
+            margin-top: 8px;
+            opacity: 0.5;
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--r-xl);
+            padding: 40px 40px 36px;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card h2 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 6px;
+            letter-spacing: 0.06em;
+        }
+
+        .card-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 13px;
+        }
+
+        /* Benefits box */
+        .benefits {
+            background: var(--accent-light);
+            padding: 16px 18px;
+            border-radius: var(--r-md);
+            margin-bottom: 24px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .benefits h4 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .benefits ul {
+            list-style: none;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .benefits li {
+            margin-bottom: 6px;
+            padding-left: 18px;
+            position: relative;
+        }
+
+        .benefits li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success-text);
+            font-weight: 700;
+        }
+
+        /* Form groups */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            letter-spacing: 0.04em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-base);
+            border: 1.5px solid var(--border-strong);
+            border-radius: var(--r-md);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Noto Sans SC', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+            background: var(--bg-surface);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Password strength */
+        .password-strength {
+            margin-top: 8px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #strengthText {
+            color: var(--text-muted);
+            min-width: 48px;
+        }
+
+        .strength-bar {
+            flex: 1;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+
+        .strength-fill.weak   { width: 33%; background: var(--error-text);   }
+        .strength-fill.medium { width: 66%; background: var(--warning-text); }
+        .strength-fill.strong { width: 100%; background: var(--success-text); }
+
+        /* Primary button */
+        .btn-primary {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--r-md);
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Noto Sans SC', sans-serif;
+            cursor: pointer;
+            transition: all 0.18s;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 10px rgba(201, 64, 50, 0.28);
+            margin-top: 6px;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(201, 64, 50, 0.38);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            background: var(--border-strong);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Terms */
+        .terms {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 16px;
+            line-height: 1.7;
+        }
+
+        .terms a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .terms a:hover {
+            text-decoration: underline;
+        }
+
+        /* Divider */
+        .divider {
+            text-align: center;
+            margin: 22px 0;
+            color: var(--text-muted);
+            font-size: 13px;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider span {
+            background: var(--bg-raised);
+            padding: 0 14px;
+            position: relative;
+            color: var(--text-muted);
+        }
+
+        /* Links */
+        .links {
+            text-align: center;
+        }
+
+        .links a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Message boxes */
+        .message {
+            padding: 12px 16px;
+            border-radius: var(--r-md);
+            margin-bottom: 18px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .message.error {
+            background: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid transparent;
+            display: block;
+        }
+
+        .message.success {
+            background: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid transparent;
+            display: block;
+        }
+
+        /* Back link */
+        .back-link {
+            text-align: center;
+            margin-top: 22px;
+        }
+
+        .back-link a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.15s;
+        }
+
+        .back-link a:hover {
+            color: var(--text-inverse);
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo">
+            <div class="logo-text">简牍</div>
+            <div class="logo-sub">JIAN DU</div>
+        </div>
+
+        <div class="card">
+            <h2>创建账号</h2>
+            <p class="card-subtitle">开始你的数据分析之旅</p>
+
+            <div class="benefits">
+                <h4>✨ 注册即享</h4>
+                <ul>
+                    <li>每天 5 次免费分析</li>
+                    <li>支持 Excel/CSV 格式</li>
+                    <li>AI 自动生成代码</li>
+                    <li>本地安全处理</li>
+                </ul>
+            </div>
+
+            <div id="message" class="message"></div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" required placeholder="设置你的用户名" minlength="3" maxlength="20">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">邮箱</label>
+                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" required placeholder="至少 8 位，包含字母和数字" minlength="8">
+                    <div class="password-strength">
+                        <span id="strengthText">密码强度</span>
+                        <div class="strength-bar">
+                            <div id="strengthBar" class="strength-fill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">确认密码</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="再次输入密码">
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    免费注册
+                </button>
+            </form>
+
+            <p class="terms">
+                注册即表示你同意我们的<br>
+                <a href="/public/terms.html" target="_blank">用户协议</a> 和 
+                <a href="/public/privacy.html" target="_blank">隐私政策</a>
+            </p>
+
+            <div class="divider">
+                <span>已有账号？</span>
+            </div>
+
+            <div class="links">
+                <a href="/public/login.html">立即登录</a>
+            </div>
+
+            <div class="back-link">
+                <a href="/public/index.html">← 返回首页</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001/api';
+
+        // 检查是否已登录
+        const savedToken = localStorage.getItem('jiandu_auth_token');
+        const savedUser = localStorage.getItem('jiandu_current_user');
+        if (savedToken && savedUser) {
+            window.location.href = '/workspace-auth.html';
+        }
+
+        // 密码强度检测
+        const passwordInput = document.getElementById('password');
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+
+        passwordInput.addEventListener('input', (e) => {
+            const password = e.target.value;
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            strengthBar.className = 'strength-fill';
+            if (strength <= 1) {
+                strengthBar.classList.add('weak');
+                strengthText.textContent = '弱';
+            } else if (strength === 2) {
+                strengthBar.classList.add('medium');
+                strengthText.textContent = '中等';
+            } else if (strength >= 3) {
+                strengthBar.classList.add('strong');
+                strengthText.textContent = '强';
+            }
+        });
+
+        // 注册表单
+        const registerForm = document.getElementById('registerForm');
+        const messageEl = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function showMessage(text, type) {
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+        }
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                showMessage('两次输入的密码不一致', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                showMessage('密码至少 6 位', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '注册中...';
+            showMessage('', '');
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showMessage(data.error || '注册失败', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '免费注册';
+                    return;
+                }
+
+                showMessage('✅ 注册成功！正在跳转到登录页...', 'success');
+                submitBtn.textContent = '注册成功';
+                setTimeout(() => {
+                    window.location.href = '/public/login.html';
+                }, 1500);
+
+            } catch (error) {
+                showMessage('网络错误，请确保服务器已启动', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '免费注册';
+            }
+        });
+    </script>
+</body>
+</html>

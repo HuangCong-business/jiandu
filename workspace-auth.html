@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简牍 - 工作空间</title>
+    <script src="./pyodide/pyodide.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 返回首页按钮 -->
+    <a id="backBtn" class="back-btn hidden" href="index.html" title="返回首页">← 返回首页</a>
+
+    <!-- 登录遮罩 -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box">
+            <div class="login-wordmark">简牍</div>
+            <div class="login-subtitle">Jian Du · 智能数据工坊</div>
+            <div id="loginError" class="login-error"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="loginUsername">用户名</label>
+                    <input class="form-input" type="text" id="loginUsername" required placeholder="请输入用户名或邮箱">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">密码</label>
+                    <input class="form-input" type="password" id="loginPassword" required placeholder="请输入密码">
+                </div>
+                <button type="submit" class="btn-login">登 录</button>
+            </form>
+            <div class="login-switch">还没有账户？<a href="admin/index.html">前往注册</a></div>
+        </div>
+    </div>
+
+    <!-- 侧边栏 -->
+    <aside class="sidebar hidden" id="mainSidebar">
+        <div class="sidebar-logo">
+            <div class="logo-wordmark">简牍</div>
+            <div class="logo-tagline">智能数据语义工坊</div>
+            <div class="logo-seal">V3</div>
+        </div>
+
+        <div class="sidebar-body">
+            <!-- 用户信息 -->
+            <div class="user-card">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div>
+                        <div class="user-name" id="userName">用户</div>
+                        <div class="user-role" id="userRole">user</div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">退出登录</button>
+            </div>
+
+            <!-- 文件区 -->
+            <div class="module-card">
+                <div class="module-header">
+                    <span class="m-label">待研读简牍</span>
+                    <div class="file-actions">
+                        <button class="action-btn" onclick="document.getElementById('fileInput').click()" title="添加文件">+</button>
+                        <button class="action-btn btn-remove" onclick="clearAllFiles()" title="清除全部">×</button>
+                    </div>
+                </div>
+                <input type="file" id="fileInput" multiple accept=".xlsx,.csv" style="display:none">
+                <div id="fileList" class="file-scroller"></div>
+            </div>
+
+            <!-- 引擎状态 -->
+            <div class="engine-state">
+                <div id="envDot" class="status-dot"></div>
+                <span id="envStatus">引擎启动中...</span>
+            </div>
+
+            <!-- 后台管理（仅管理员） -->
+            <a id="adminLink" class="admin-link hidden" onclick="openAdminPanel(); return false;">
+                ⚙️ 后台管理
+            </a>
+
+            <!-- 系统设置（仅管理员） -->
+            <a id="settingsLink" class="admin-link hidden" href="settings.html">
+                🔑 API 设置
+            </a>
+
+            <!-- 反馈管理（仅管理员/意见收集员） -->
+            <a id="feedbackManageLink" class="admin-link hidden" href="admin/feedback.html" target="_blank">
+                📋 反馈管理
+            </a>
+        </div>
+    </aside>
+
+    <!-- 主内容 -->
+    <main class="main-content hidden" id="mainContent">
+        <div class="page-header">
+            <div class="page-title">数据分析工作空间</div>
+            <div class="page-subtitle">言出法随 · 让复杂数据化繁为简</div>
+        </div>
+
+        <!-- 输入面板 -->
+        <div class="input-panel">
+            <textarea id="userInput" placeholder="请描述您的数据处理需求，例如：比对 A 表和 B 表中 ID 相同的记录，找出单价差异大于 5% 的项..."></textarea>
+            <div class="panel-bottom">
+                <div class="tips">💡 支持 Excel (.xlsx) 和 CSV 格式，自动识别编码</div>
+                <button id="analyzeBtn" class="btn-primary" disabled>开启研读</button>
+            </div>
+        </div>
+
+        <!-- 输出面板 -->
+        <div id="resultContent" class="output-panel">
+            <div class="Welcome-box">
+                <div class="Welcome-title">欢迎使用简牍</div>
+                <div class="Welcome-desc">
+                    请在上方上传 Excel 或 CSV 文件，<br>
+                    并用日常语言描述您的数据处理逻辑。<br>
+                    系统将自动生成 Python 代码完成分析。
+                </div>
+            </div>
+        </div>
+
+        <!-- 历史记录 -->
+        <div class="history-panel">
+            <div class="history-title">📜 历史分析记录</div>
+            <div id="historyList" class="history-list">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <div class="empty-state-title">暂无历史记录</div>
+                    <div class="empty-state-desc">完成首次分析后，记录会自动显示在这里</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 加载动画 -->
+    <div id="loader" class="loader-mask hidden">
+        <div class="loader-box">
+            <div class="spinner"></div>
+            <div class="loader-title" id="loaderText">AI 正在研读简牍...</div>
+            <div class="loader-sub">请稍候，首次启动需要初始化 Python 环境</div>
+        </div>
+    </div>
+
+    <!-- 反馈模态框 -->
+    <div id="feedbackModal" class="feedback-modal hidden">
+        <div class="feedback-box">
+            <div class="feedback-title">💬 意见反馈</div>
+            <div id="feedbackError" class="login-error"></div>
+            <div id="feedbackSuccess" class="alert-success hidden"></div>
+            <form id="feedbackForm">
+                <div class="form-group">
+                    <label class="form-label" for="feedbackTitle">标题</label>
+                    <input class="form-input" type="text" id="feedbackTitle" required placeholder="简要描述您的问题或建议" maxlength="200">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="feedbackContent">详细内容</label>
+                    <textarea id="feedbackContent" required placeholder="请详细描述您的建议、问题或需求..." rows="5" style="width:100%;border:1.5px solid var(--border-strong);border-radius:var(--r-md);padding:11px 14px;font-size:14px;font-family:inherit;resize:vertical;background:var(--bg-base);color:var(--text-primary);outline:none;line-height:1.7;" onfocus="this.style.borderColor='var(--accent)';this.style.boxShadow='0 0 0 3px var(--accent-light)'" onblur="this.style.borderColor='var(--border-strong)';this.style.boxShadow='none'"></textarea>
+                </div>
+                <button type="submit" class="btn-login" style="background:var(--success-bg);color:var(--success-text);box-shadow:none;">提交反馈</button>
+            </form>
+            <div style="text-align:center;margin-top:16px;">
+                <button onclick="closeFeedbackForm()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:13px;text-decoration:underline;">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 订阅通知模态框 -->
+    <div id="subscribeModal" class="feedback-modal hidden">
+        <div class="feedback-box" style="max-width:420px;">
+            <div style="text-align:center;margin-bottom:20px;">
+                <div style="font-size:48px;margin-bottom:12px;">📬</div>
+                <div class="feedback-title" style="border:none;padding:0;font-size:20px;">产品更新早知道</div>
+                <div style="color:var(--text-muted);font-size:13px;margin-top:8px;line-height:1.6;">留下邮箱，产品有新功能时第一时间通知你<br>不发广告，仅用于产品通知</div>
+            </div>
+            <div id="subscribeError" class="login-error" style="text-align:center;"></div>
+            <div id="subscribeSuccess" class="alert-success hidden" style="text-align:center;"></div>
+            <form id="subscribeForm">
+                <div class="form-group">
+                    <input class="form-input" type="email" id="subscribeEmail" required placeholder="your@email.com" style="text-align:center;">
+                </div>
+                <button type="submit" class="btn-login" style="width:100%;">订阅通知</button>
+            </form>
+            <div style="text-align:center;margin-top:14px;">
+                <button onclick="closeSubscribeModal()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:13px;text-decoration:underline;">不需要，谢谢</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── 认证 ─────────────────────────────────────
+        const API_BASE = 'http://localhost:3001/api';
+        let currentUser = null;
+        let authToken = null;
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const savedToken = localStorage.getItem('jiandu_auth_token');
+            const savedUser = localStorage.getItem('jiandu_current_user');
+            if (savedToken && savedUser) {
+                authToken = savedToken;
+                currentUser = JSON.parse(savedUser);
+                try {
+                    const res = await fetch(`${API_BASE}/auth/me`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    if (res.ok) {
+                        showMainInterface();
+                    } else { logout(); }
+                } catch { logout(); }
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            try {
+                const res = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    authToken = data.token;
+                    currentUser = data.user;
+                    localStorage.setItem('jiandu_auth_token', authToken);
+                    localStorage.setItem('jiandu_current_user', JSON.stringify(currentUser));
+                    showMainInterface();
+                } else {
+                    errorDiv.textContent = data.error || '登录失败';
+                    errorDiv.style.display = 'block';
+                }
+            } catch {
+                errorDiv.textContent = '网络错误，请确保后台服务器已启动';
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        function showMainInterface() {
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('mainSidebar').classList.remove('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+            document.getElementById('backBtn').classList.remove('hidden');
+            document.getElementById('userName').textContent = currentUser.username;
+            document.getElementById('userRole').textContent = currentUser.role === 'admin' ? '管理员' : '用户';
+            document.getElementById('userAvatar').textContent = currentUser.username.charAt(0).toUpperCase();
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminLink').classList.remove('hidden');
+                document.getElementById('settingsLink').classList.remove('hidden');
+            }
+            alert(`[调试] 登录成功！角色: ${currentUser.role}，用户名: ${currentUser.username}`);
+            if (currentUser.role === 'admin' || currentUser.role === 'feedback_collector') {
+                document.getElementById('feedbackManageLink').classList.remove('hidden');
+            }
+            loadAnalysisHistory();
+            if (typeof initPyodide === 'function') initPyodide();
+        }
+
+        function logout() {
+            localStorage.removeItem('jiandu_auth_token');
+            localStorage.removeItem('jiandu_current_user');
+            location.reload();
+        }
+
+        function openAdminPanel() {
+            window.open('http://localhost:3001/admin/index.html', '_blank');
+        }
+
+        function openFeedbackForm() {
+            document.getElementById('feedbackModal').classList.remove('hidden');
+            document.getElementById('feedbackForm').reset();
+            document.getElementById('feedbackError').style.display = 'none';
+            document.getElementById('feedbackSuccess').classList.add('hidden');
+        }
+
+        function closeFeedbackForm() {
+            document.getElementById('feedbackModal').classList.add('hidden');
+        }
+
+        document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('feedbackTitle').value;
+            const content = document.getElementById('feedbackContent').value;
+            const errorDiv = document.getElementById('feedbackError');
+            const successDiv = document.getElementById('feedbackSuccess');
+            try {
+                const res = await fetch(`${API_BASE}/feedback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                    body: JSON.stringify({ title, content })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    successDiv.textContent = '✅ 反馈已提交，我们会尽快处理！';
+                    successDiv.classList.remove('hidden');
+                    errorDiv.style.display = 'none';
+                    setTimeout(closeFeedbackForm, 2500);
+                } else {
+                    errorDiv.textContent = data.error || '提交失败';
+                    errorDiv.style.display = 'block';
+                }
+            } catch {
+                errorDiv.textContent = '网络错误，请检查服务器连接';
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        // ── 历史记录 ─────────────────────────────────
+        async function loadAnalysisHistory() {
+            try {
+                const res = await fetch(`${API_BASE}/analysis/history?page=1&limit=10`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                const historyList = document.getElementById('historyList');
+                if (data.history.length === 0) {
+                    historyList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-title">暂无历史记录</div><div class="empty-state-desc">完成首次分析后，记录会自动显示在这里</div></div>';
+                    return;
+                }
+                historyList.innerHTML = data.history.map(item => `
+                    <div class="history-item" onclick="loadAnalysis(${item.id})">
+                        <div class="history-query">${escapeHtml(item.query_text.substring(0, 100))}${item.query_text.length > 100 ? '…' : ''}</div>
+                        <div class="history-meta">
+                            <span class="badge badge-${item.status === 'success' ? 'success' : item.status === 'failed' ? 'failed' : 'pending'}">${item.status === 'success' ? '✓ 成功' : item.status === 'failed' ? '✗ 失败' : '⋯ 进行中'}</span>
+                            <span>${new Date(item.created_at).toLocaleString('zh-CN')}</span>
+                            ${item.execution_time_ms ? `<span>⏱ ${item.execution_time_ms}ms</span>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch {
+                document.getElementById('historyList').innerHTML = '<div class="empty-state"><div class="empty-state-title">加载失败</div><div class="empty-state-desc">请检查服务器连接</div></div>';
+            }
+        }
+
+        async function loadAnalysis(analysisId) {
+            try {
+                const res = await fetch(`${API_BASE}/analysis/${analysisId}`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                if (!res.ok) throw new Error();
+                const data = data.response ? (await data.json()).analysis : (await res.json()).analysis;
+                document.getElementById('resultContent').innerHTML = `
+                    <div class="output-title">📊 分析详情</div>
+                    <p style="color:var(--text-secondary);margin:12px 0;font-size:14px;"><strong>查询：</strong>${escapeHtml(data.analysis.query_text)}</p>
+                    <p style="color:var(--text-secondary);margin:12px 0;font-size:14px;"><strong>状态：</strong><span class="badge badge-${data.analysis.status}">${data.analysis.status}</span></p>
+                    ${data.analysis.output_summary ? `<p style="color:var(--text-secondary);margin:12px 0;font-size:14px;"><strong>摘要：</strong>${escapeHtml(data.analysis.output_summary)}</p>` : ''}
+                    ${data.analysis.generated_code ? `<pre style="background:var(--bg-raised);padding:16px;border-radius:var(--r-md);font-size:12px;overflow-x:auto;margin-top:16px;font-family:monospace;"><code>${escapeHtml(data.analysis.generated_code)}</code></pre>` : ''}
+                `;
+            } catch { alert('加载失败'); }
+        }
+
+        function escapeHtml(text) {
+            const d = document.createElement('div'); d.textContent = text; return d.innerHTML;
+        }
+
+        async function saveAnalysisHistory(data) {
+            if (!authToken) return;
+            try {
+                await fetch(`${API_BASE}/analysis`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                    body: JSON.stringify({ ...data, userId: currentUser?.id })
+                });
+                loadAnalysisHistory();
+            } catch {}
+        }
+
+        window.saveAnalysisHistory = saveAnalysisHistory;
+        window.currentUser = () => currentUser;
+        window.getAuthToken = () => authToken;
+
+        // ── 订阅通知弹窗 ─────────────────────────────────
+        let subscribeShown = false;
+
+        function openSubscribeModal() {
+            if (subscribeShown) return;
+            subscribeShown = true;
+            document.getElementById('subscribeModal').classList.remove('hidden');
+            document.getElementById('subscribeForm').reset();
+            document.getElementById('subscribeError').style.display = 'none';
+            document.getElementById('subscribeSuccess').classList.add('hidden');
+        }
+
+        window.closeSubscribeModal = function() {
+            document.getElementById('subscribeModal').classList.add('hidden');
+            localStorage.setItem('jiandu_subscribe_dismissed', '1');
+        };
+
+        document.getElementById('subscribeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('subscribeEmail').value;
+            const errorDiv = document.getElementById('subscribeError');
+            const successDiv = document.getElementById('subscribeSuccess');
+            try {
+                const res = await fetch(`${API_BASE}/subscribe`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    successDiv.textContent = '✅ 订阅成功！产品更新时我们会通知你';
+                    successDiv.classList.remove('hidden');
+                    errorDiv.style.display = 'none';
+                    document.getElementById('subscribeForm').style.display = 'none';
+                    setTimeout(closeSubscribeModal, 2500);
+                } else {
+                    errorDiv.textContent = data.error || '订阅失败';
+                    errorDiv.style.display = 'block';
+                }
+            } catch {
+                errorDiv.textContent = '网络错误，请检查连接';
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        // 监听分析成功事件（由 app-enhanced.js 触发）
+        window.addEventListener('jiandu:analysis-success', () => {
+            if (!localStorage.getItem('jiandu_subscribe_dismissed')) {
+                // 延迟 3 秒弹出，等用户先看到分析结果
+                setTimeout(openSubscribeModal, 3000);
+            }
+        });
+    </script>
+
+    <script src="js/app-enhanced.js"></script>
+</body>
+</html>

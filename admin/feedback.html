@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简牍 - 用户反馈管理</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-base);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-xl);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--sidebar-bg);
+            color: var(--text-inverse);
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .header-actions { display: flex; gap: 10px; }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--r-md);
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-light {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-inverse);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .btn-light:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.25);
+        }
+
+        .content { padding: 30px; }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1.5px solid var(--border);
+            background: var(--bg-surface);
+            border-radius: var(--r-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .feedback-list { display: flex; flex-direction: column; gap: 15px; }
+
+        .feedback-card {
+            border: 1.5px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 20px;
+            transition: all 0.2s;
+            background: var(--bg-surface);
+        }
+
+        .feedback-card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .feedback-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .feedback-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: var(--r-full);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-pending {
+            background: var(--warning-bg);
+            color: var(--warning-text);
+        }
+
+        .badge-reviewed {
+            background: var(--accent-light);
+            color: var(--accent-hover);
+        }
+
+        .badge-resolved {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .badge-rejected {
+            background: var(--error-bg);
+            color: var(--error-text);
+        }
+
+        .feedback-content {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+        }
+
+        .feedback-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .reply-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--bg-raised);
+            border-radius: var(--r-md);
+        }
+
+        .reply-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .reply-text {
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(26,18,9,0.55);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-xl);
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 24px;
+            color: var(--text-primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-muted);
+            line-height: 1;
+        }
+
+        .close-btn:hover { color: var(--accent); }
+
+        .form-group { margin-bottom: 20px; }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid var(--border-strong);
+            border-radius: var(--r-md);
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+            background: var(--bg-surface);
+        }
+
+        .form-group textarea::placeholder { color: var(--text-muted); }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 11px 26px;
+            border-radius: var(--r-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s;
+            font-family: inherit;
+            box-shadow: 0 2px 8px rgba(201,64,50,0.25);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(201,64,50,0.35);
+        }
+
+        .btn-primary:active { transform: translateY(0); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💬 用户反馈管理</h1>
+            <div class="header-actions">
+                <button class="btn btn-light" onclick="window.open('admin/index.html', '_self')">返回后台</button>
+                <button class="btn btn-light" onclick="window.open('workspace-auth.html', '_blank')">工具主页</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="loadFeedback('')">全部</button>
+                <button class="filter-btn" onclick="loadFeedback('pending')">待处理</button>
+                <button class="filter-btn" onclick="loadFeedback('reviewed')">处理中</button>
+                <button class="filter-btn" onclick="loadFeedback('resolved')">已解决</button>
+                <button class="filter-btn" onclick="loadFeedback('rejected')">已拒绝</button>
+            </div>
+
+            <div id="feedbackList" class="feedback-list">
+                <p style="text-align:center; color:#64748b; padding:40px;">加载中...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 回复模态框 -->
+    <div id="replyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>回复反馈</h2>
+                <button class="close-btn" onclick="closeReplyModal()">×</button>
+            </div>
+            <form id="replyForm">
+                <input type="hidden" id="replyFeedbackId">
+                <div class="form-group">
+                    <label>处理状态</label>
+                    <select id="replyStatus">
+                        <option value="pending">待处理</option>
+                        <option value="reviewed">处理中</option>
+                        <option value="resolved">已解决</option>
+                        <option value="rejected">已拒绝</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>回复内容</label>
+                    <textarea id="replyContent" rows="6" placeholder="请输入回复内容..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">提交回复</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001/api';
+        let authToken = null;
+        let currentUser = null;
+
+        // 页面加载时检查登录状态
+        window.addEventListener('DOMContentLoaded', () => {
+            const sharedToken = localStorage.getItem('jiandu_auth_token');
+            const sharedUser = localStorage.getItem('jiandu_current_user');
+            
+            if (sharedToken && sharedUser) {
+                authToken = sharedToken;
+                currentUser = JSON.parse(sharedUser);
+                
+                // 检查权限
+                if (currentUser.role !== 'admin' && currentUser.role !== 'feedback_collector') {
+                    alert('⚠️ 无权访问\n\n只有管理员和意见收集员可以查看反馈');
+                    window.location.href = 'workspace-auth.html';
+                    return;
+                }
+                
+                loadFeedback();
+            } else {
+                alert('请先登录');
+                window.location.href = 'workspace-auth.html';
+            }
+        });
+
+        async function loadFeedback(status = '') {
+            try {
+                const params = new URLSearchParams({ page: 1, limit: 50 });
+                if (status) params.append('status', status);
+                
+                const res = await fetch(`${API_BASE}/feedback?${params}`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                if (!res.ok) throw new Error('加载失败');
+                
+                const data = await res.json();
+                renderFeedbackList(data.feedback);
+                
+                // 更新按钮状态
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.textContent === getStatusText(status)) {
+                        btn.classList.add('active');
+                    }
+                });
+            } catch (error) {
+                console.error('Load feedback error:', error);
+                document.getElementById('feedbackList').innerHTML = 
+                    '<p style="text-align:center; color:#ef4444; padding:40px;">加载失败</p>';
+            }
+        }
+
+        function getStatusText(status) {
+            const map = {
+                '': '全部',
+                'pending': '待处理',
+                'reviewed': '处理中',
+                'resolved': '已解决',
+                'rejected': '已拒绝'
+            };
+            return map[status] || '全部';
+        }
+
+        function renderFeedbackList(feedback) {
+            const list = document.getElementById('feedbackList');
+            
+            if (feedback.length === 0) {
+                list.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:40px;">暂无反馈</p>';
+                return;
+            }
+            
+            list.innerHTML = feedback.map(fb => `
+                <div class="feedback-card">
+                    <div class="feedback-header">
+                        <div class="feedback-title">${escapeHtml(fb.title)}</div>
+                        <span class="badge badge-${fb.status}">${getStatusText(fb.status)}</span>
+                    </div>
+                    <div class="feedback-meta">
+                        <span>👤 ${escapeHtml(fb.username || '匿名用户')}</span>
+                        <span>📧 ${escapeHtml(fb.email || '无')}</span>
+                        <span>📅 ${formatDate(fb.created_at)}</span>
+                    </div>
+                    <div class="feedback-content">${escapeHtml(fb.content)}</div>
+                    ${fb.admin_reply ? `
+                        <div class="reply-section">
+                            <div class="reply-label">💬 管理员回复：</div>
+                            <div class="reply-text">${escapeHtml(fb.admin_reply)}</div>
+                        </div>
+                    ` : ''}
+                    <div class="feedback-footer">
+                        <button class="btn btn-primary" onclick="openReplyModal(${fb.id}, '${fb.status}')" style="width:auto;">回复/处理</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openReplyModal(id, status) {
+            document.getElementById('replyFeedbackId').value = id;
+            document.getElementById('replyStatus').value = status;
+            document.getElementById('replyContent').value = '';
+            document.getElementById('replyModal').classList.add('active');
+        }
+
+        function closeReplyModal() {
+            document.getElementById('replyModal').classList.remove('active');
+        }
+
+        document.getElementById('replyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('replyFeedbackId').value;
+            const status = document.getElementById('replyStatus').value;
+            const admin_reply = document.getElementById('replyContent').value;
+            
+            try {
+                const res = await fetch(`${API_BASE}/feedback/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ status, admin_reply })
+                });
+                
+                if (res.ok) {
+                    alert('回复已提交');
+                    closeReplyModal();
+                    loadFeedback();
+                } else {
+                    const data = await res.json();
+                    alert('提交失败：' + data.error);
+                }
+            } catch (error) {
+                alert('网络错误');
+                console.error('Reply error:', error);
+            }
+        });
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleString('zh-CN');
+        }
+    </script>
+</body>
+</html>

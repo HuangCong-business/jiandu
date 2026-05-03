@@ -1,0 +1,18 @@
+{
+  "name": "jiandu",
+  "version": "2.0.3",
+  "description": "简牍 - 智能数据语义工坊",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site, no build needed'",
+    "start": "vercel --prod"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.6.5"
+  },
+  "devDependencies": {
+    "vercel": "^32.7.2"
+  }
+}

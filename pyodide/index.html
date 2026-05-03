@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Excel 智能助手 · AI 驱动数据分析</title>
-    
+
     <!-- 字体和图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+
     <style>
         * {
             margin: 0;
@@ -17,9 +18,9 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Microsoft YaHei', sans-serif;
-            background: #f5f7fb;
-            color: #1e293b;
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
             line-height: 1.6;
         }
 
@@ -46,19 +47,19 @@
 
         .logo i {
             font-size: 32px;
-            color: #2563eb;
-            background: white;
+            color: var(--accent);
+            background: var(--bg-surface);
             padding: 12px;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-radius: var(--r-lg);
+            box-shadow: var(--shadow-sm);
         }
 
         .logo h1 {
             font-size: 24px;
             font-weight: 600;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--accent);
+            font-family: 'Noto Serif SC', serif;
+            letter-spacing: 0.05em;
         }
 
         .api-key-section {
@@ -69,15 +70,15 @@
         .api-key-input {
             display: flex;
             align-items: center;
-            background: white;
-            border-radius: 40px;
+            background: var(--bg-surface);
+            border-radius: var(--r-full);
             padding: 4px 4px 4px 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-xs);
+            border: 1px solid var(--border);
         }
 
         .api-key-input i {
-            color: #64748b;
+            color: var(--text-muted);
             font-size: 14px;
         }
 
@@ -88,29 +89,39 @@
             font-size: 14px;
             outline: none;
             background: transparent;
+            color: var(--text-primary);
+        }
+
+        .api-key-input input::placeholder {
+            color: var(--text-muted);
         }
 
         .api-key-input button {
-            background: #2563eb;
+            background: var(--accent);
             color: white;
             border: none;
             padding: 8px 20px;
-            border-radius: 40px;
+            border-radius: var(--r-full);
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.18s;
             display: flex;
             align-items: center;
             gap: 6px;
+            font-family: inherit;
+            box-shadow: 0 2px 8px rgba(201, 64, 50, 0.25);
         }
 
         .api-key-input button:hover {
-            background: #1d4ed8;
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(201, 64, 50, 0.35);
         }
 
         .api-key-input button.saved {
-            background: #10b981;
+            background: #4CAF80;
+            box-shadow: 0 2px 8px rgba(76, 175, 128, 0.25);
         }
 
         /* 主网格布局 */
@@ -123,10 +134,11 @@
 
         /* 卡片通用样式 */
         .card {
-            background: white;
-            border-radius: 24px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-xl);
             padding: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: var(--shadow-sm);
         }
 
         .card-header {
@@ -139,67 +151,71 @@
         .card-header h2 {
             font-size: 18px;
             font-weight: 600;
-            color: #334155;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 8px;
+            font-family: 'Noto Serif SC', serif;
         }
 
         .card-header h2 i {
-            color: #2563eb;
+            color: var(--accent);
             font-size: 20px;
         }
 
         .badge {
-            background: #e2e8f0;
+            background: var(--bg-raised);
             padding: 4px 10px;
-            border-radius: 40px;
+            border-radius: var(--r-full);
             font-size: 12px;
             font-weight: 500;
-            color: #475569;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
         }
 
         /* 文件上传区域 */
         .upload-area {
-            border: 2px dashed #cbd5e1;
-            border-radius: 16px;
+            border: 2px dashed var(--border-strong);
+            border-radius: var(--r-lg);
             padding: 40px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
             margin-bottom: 20px;
+            background: var(--bg-base);
         }
 
         .upload-area:hover {
-            border-color: #2563eb;
-            background: #f8fafc;
+            border-color: var(--accent);
+            background: var(--accent-light);
         }
 
         .upload-area i {
             font-size: 48px;
-            color: #94a3b8;
+            color: var(--text-muted);
             margin-bottom: 12px;
         }
 
         .upload-area h3 {
             font-size: 16px;
             font-weight: 500;
-            color: #334155;
+            color: var(--text-primary);
             margin-bottom: 8px;
         }
 
         .upload-area p {
-            color: #64748b;
+            color: var(--text-muted);
             font-size: 14px;
         }
 
         .file-info {
-            background: #f1f5f9;
-            border-radius: 12px;
+            background: var(--bg-raised);
+            border-radius: var(--r-md);
             padding: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            border: 1px solid var(--border);
         }
 
         .file-info-left {
@@ -210,29 +226,29 @@
 
         .file-info-left i {
             font-size: 24px;
-            color: #2563eb;
+            color: var(--accent);
         }
 
         .file-name {
             font-weight: 500;
-            color: #1e293b;
+            color: var(--text-primary);
         }
 
         .file-size {
             font-size: 12px;
-            color: #64748b;
+            color: var(--text-muted);
         }
 
         .remove-file {
-            color: #ef4444;
+            color: var(--error-text);
             cursor: pointer;
             padding: 8px;
-            border-radius: 8px;
+            border-radius: var(--r-sm);
             transition: all 0.2s;
         }
 
         .remove-file:hover {
-            background: #fee2e2;
+            background: var(--error-bg);
         }
 
         /* 需求输入区 */
@@ -244,18 +260,24 @@
             width: 100%;
             height: 120px;
             padding: 16px;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            font-family: inherit;
+            border: 1px solid var(--border-strong);
+            border-radius: var(--r-lg);
+            font-family: 'Noto Sans SC', sans-serif;
             font-size: 14px;
             resize: vertical;
             outline: none;
             transition: all 0.2s;
+            background: var(--bg-base);
+            color: var(--text-primary);
         }
 
         .input-area textarea:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        .input-area textarea::placeholder {
+            color: var(--text-muted);
         }
 
         .action-buttons {
@@ -265,59 +287,67 @@
         }
 
         .primary-btn {
-            background: #2563eb;
+            background: var(--accent);
             color: white;
             border: none;
             padding: 12px 24px;
-            border-radius: 40px;
+            border-radius: var(--r-full);
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.18s;
             display: flex;
             align-items: center;
             gap: 8px;
             flex: 1;
             justify-content: center;
+            font-family: inherit;
+            box-shadow: 0 2px 8px rgba(201, 64, 50, 0.25);
         }
 
         .primary-btn:hover:not(:disabled) {
-            background: #1d4ed8;
+            background: var(--accent-hover);
             transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+            box-shadow: 0 4px 14px rgba(201, 64, 50, 0.35);
         }
 
         .primary-btn:disabled {
-            background: #94a3b8;
+            background: var(--border-strong);
+            color: var(--text-muted);
             cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
         }
 
         .secondary-btn {
-            background: white;
-            color: #475569;
-            border: 1px solid #e2e8f0;
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-strong);
             padding: 12px 24px;
-            border-radius: 40px;
+            border-radius: var(--r-full);
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
             display: flex;
             align-items: center;
             gap: 8px;
+            font-family: inherit;
         }
 
         .secondary-btn:hover {
-            background: #f8fafc;
-            border-color: #cbd5e1;
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
         /* 代码展示区域 */
         .code-block {
-            background: #1e293b;
-            border-radius: 12px;
+            background: var(--sidebar-bg);
+            border-radius: var(--r-md);
             padding: 16px;
             position: relative;
+            border: 1px solid var(--sidebar-border);
         }
 
         .code-block pre {
@@ -334,19 +364,21 @@
             position: absolute;
             top: 12px;
             right: 12px;
-            background: #334155;
-            color: #94a3b8;
-            border: none;
+            background: var(--sidebar-hover);
+            color: var(--sidebar-text);
+            border: 1px solid var(--sidebar-border);
             padding: 6px 12px;
-            border-radius: 6px;
+            border-radius: var(--r-sm);
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
+            font-family: inherit;
         }
 
         .copy-code:hover {
-            background: #475569;
-            color: #e2e8f0;
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
         }
 
         /* 分析结果区域 */
@@ -355,25 +387,27 @@
         }
 
         .conclusion-card {
-            background: #f8fafc;
-            border-radius: 16px;
+            background: var(--bg-raised);
+            border-radius: var(--r-lg);
             padding: 20px;
             margin-bottom: 24px;
-            border-left: 4px solid #2563eb;
+            border-left: 4px solid var(--accent);
+            border: 1px solid var(--border);
         }
 
         .conclusion-title {
             font-size: 16px;
             font-weight: 600;
-            color: #1e293b;
+            color: var(--text-primary);
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
+            font-family: 'Noto Serif SC', serif;
         }
 
         .conclusion-text {
-            color: #334155;
+            color: var(--text-secondary);
             font-size: 15px;
             line-height: 1.7;
         }
@@ -386,16 +420,17 @@
         }
 
         .viz-card {
-            background: white;
-            border-radius: 16px;
+            background: var(--bg-surface);
+            border-radius: var(--r-lg);
             padding: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
         }
 
         .viz-title {
             font-size: 15px;
             font-weight: 600;
-            color: #334155;
+            color: var(--text-primary);
             margin-bottom: 16px;
             display: flex;
             align-items: center;
@@ -403,14 +438,15 @@
         }
 
         .viz-placeholder {
-            background: #f1f5f9;
+            background: var(--bg-raised);
             height: 300px;
-            border-radius: 12px;
+            border-radius: var(--r-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #64748b;
+            color: var(--text-muted);
             font-size: 14px;
+            border: 1px solid var(--border);
         }
 
         .download-section {
@@ -421,24 +457,26 @@
         }
 
         .download-btn {
-            background: #10b981;
+            background: #4CAF80;
             color: white;
             border: none;
             padding: 14px 32px;
-            border-radius: 40px;
+            border-radius: var(--r-full);
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.18s;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-family: inherit;
+            box-shadow: 0 2px 8px rgba(76, 175, 128, 0.25);
         }
 
         .download-btn:hover {
-            background: #059669;
+            background: #45a05e;
             transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+            box-shadow: 0 4px 14px rgba(76, 175, 128, 0.35);
         }
 
         /* 加载状态 */
@@ -446,7 +484,7 @@
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
+            border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: white;
             animation: spin 1s ease-in-out infinite;
@@ -461,14 +499,15 @@
             position: fixed;
             bottom: 24px;
             right: 24px;
-            background: #1e293b;
-            color: white;
+            background: var(--sidebar-bg);
+            color: var(--text-inverse);
             padding: 12px 24px;
-            border-radius: 40px;
+            border-radius: var(--r-full);
             font-size: 14px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-md);
             animation: slideIn 0.3s ease;
             z-index: 1000;
+            border: 1px solid var(--sidebar-border);
         }
 
         @keyframes slideIn {
@@ -487,22 +526,22 @@
             .main-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .header {
                 flex-direction: column;
                 gap: 16px;
             }
-            
+
             .api-key-input {
                 width: 100%;
             }
-            
+
             .api-key-input input {
                 width: 100%;
             }
         }
     </style>
-    
+
     <script src="./pyodide/pyodide.js"></script>
 </head>
 <body>
@@ -510,10 +549,10 @@
         <!-- 头部 -->
         <header class="header">
             <div class="logo">
-                <i class="fas fa-robot"></i>
-                <h1>Excel 智能助手 · AI 驱动分析</h1>
+                <i class="fas fa-scroll"></i>
+                <h1>简牍 · AI 数据分析</h1>
             </div>
-            
+
             <div class="api-key-section">
                 <div class="api-key-input">
                     <i class="fas fa-key" style="margin-left: 8px;"></i>
@@ -534,7 +573,7 @@
                     <h2><i class="fas fa-upload"></i> 数据源</h2>
                     <span class="badge">支持 .xlsx, .csv</span>
                 </div>
-                
+
                 <!-- 文件上传区域 -->
                 <div id="uploadArea" class="upload-area" onclick="document.getElementById('fileInput').click()">
                     <i class="fas fa-cloud-upload-alt"></i>
@@ -542,7 +581,7 @@
                     <p>支持 .xlsx, .xls, .csv 格式，最大 50MB</p>
                     <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;" onchange="handleFileSelect(this)">
                 </div>
-                
+
                 <!-- 文件信息（初始隐藏） -->
                 <div id="fileInfo" class="file-info" style="display: none;">
                     <div class="file-info-left">
@@ -579,16 +618,16 @@
                     <h2><i class="fas fa-cog"></i> 执行引擎</h2>
                     <span class="badge" id="pyodideStatus">初始化中...</span>
                 </div>
-                
+
                 <!-- Python 环境状态 -->
-                <div style="margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 12px;">
+                <div style="margin-bottom: 20px; padding: 16px; background: var(--bg-raised); border-radius: var(--r-md); border: 1px solid var(--border);">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                        <div style="width: 8px; height: 8px; border-radius: 50%; background: #fbbf24;" id="statusDot"></div>
-                        <span style="font-size: 14px; color: #475569;" id="statusText">正在启动 Python 环境...</span>
+                        <div style="width: 8px; height: 8px; border-radius: 50%; background: #E8A020;" id="statusDot"></div>
+                        <span style="font-size: 14px; color: var(--text-secondary);" id="statusText">正在启动 Python 环境...</span>
                     </div>
-                    <div style="font-size: 13px; color: #64748b; font-family: monospace;" id="pyodideLog"></div>
+                    <div style="font-size: 13px; color: var(--text-muted); font-family: monospace;" id="pyodideLog"></div>
                 </div>
-                
+
                 <!-- 代码展示区（默认隐藏） -->
                 <div id="codeSection" style="display: none;">
                     <div class="card-header" style="margin-bottom: 12px;">
@@ -611,23 +650,23 @@
                 <h2><i class="fas fa-chart-bar"></i> 分析结果</h2>
                 <span class="badge" id="executionTime"></span>
             </div>
-            
+
             <!-- 结论区 -->
             <div class="conclusion-card" id="conclusionSection">
                 <div class="conclusion-title">
-                    <i class="fas fa-star" style="color: #fbbf24;"></i>
+                    <i class="fas fa-star" style="color: #E8A020;"></i>
                     分析结论
                 </div>
                 <div class="conclusion-text" id="conclusionText">
                     正在分析...
                 </div>
             </div>
-            
+
             <!-- 可视化区域 -->
             <div class="visualization-grid" id="visualizationGrid">
                 <!-- 动态插入可视化图表 -->
             </div>
-            
+
             <!-- 下载按钮区 -->
             <div class="download-section" id="downloadSection" style="display: none;">
                 <button class="download-btn" onclick="downloadModifiedFile()">
@@ -649,18 +688,18 @@
         let generatedPythonCode = '';
         let analysisResults = null;
         let apiKey = localStorage.getItem('deepseek_api_key') || '';
-        
+
         // ==================== 初始化 ====================
         async function initPyodide() {
             const statusDot = document.getElementById('statusDot');
             const statusText = document.getElementById('statusText');
             const pyodideLog = document.getElementById('pyodideLog');
-            
+
             try {
-                statusDot.style.background = '#fbbf24';
+                statusDot.style.background = '#E8A020';
                 statusText.textContent = '正在加载 Pyodide...';
                 pyodideLog.textContent = '> 加载核心模块...';
-                
+
                 pyodide = await loadPyodide({
                     indexURL: './pyodide/',
                     stdout: (text) => {
@@ -670,10 +709,10 @@
                         pyodideLog.textContent += '\n⚠️ ' + text;
                     }
                 });
-                
+
                 pyodideLog.textContent += '\n> 加载 pandas...';
                 await pyodide.loadPackage(['pandas', 'numpy', 'matplotlib', 'openpyxl']);
-                
+
                 // 设置 matplotlib 中文字体
                 pyodide.runPython(`
 import matplotlib.pyplot as plt
@@ -682,17 +721,17 @@ matplotlib.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'DejaVu S
 matplotlib.rcParams['axes.unicode_minus'] = False
 print("✅ 可视化环境就绪")
                 `);
-                
-                statusDot.style.background = '#10b981';
+
+                statusDot.style.background = '#4CAF80';
                 statusText.textContent = 'Python 环境已就绪';
                 pyodideLog.textContent += '\n✅ 所有模块加载完成';
-                
+
                 document.getElementById('pyodideStatus').textContent = '已就绪';
-                
+
                 showToast('Python 环境初始化成功', 'success');
-                
+
             } catch (error) {
-                statusDot.style.background = '#ef4444';
+                statusDot.style.background = 'var(--accent)';
                 statusText.textContent = '初始化失败';
                 pyodideLog.textContent += '\n❌ 错误：' + error.message;
                 console.error(error);
@@ -704,14 +743,14 @@ print("✅ 可视化环境就绪")
         function saveApiKey() {
             const input = document.getElementById('apiKeyInput');
             const btn = document.getElementById('saveApiKeyBtn');
-            
+
             if (input.value) {
                 apiKey = input.value;
                 localStorage.setItem('deepseek_api_key', apiKey);
                 btn.innerHTML = '<i class="fas fa-check"></i> 已保存';
                 btn.classList.add('saved');
                 showToast('API Key 已保存', 'success');
-                
+
                 setTimeout(() => {
                     btn.innerHTML = '<i class="fas fa-save"></i> 保存密钥';
                     btn.classList.remove('saved');
@@ -731,20 +770,20 @@ print("✅ 可视化环境就绪")
             const file = input.files[0];
             if (file) {
                 const reader = new FileReader();
-                
+
                 reader.onload = function(e) {
                     currentFile = file;
                     currentFileData = new Uint8Array(e.target.result);
-                    
+
                     // 更新UI
                     document.getElementById('uploadArea').style.display = 'none';
                     document.getElementById('fileInfo').style.display = 'flex';
                     document.getElementById('fileName').textContent = file.name;
                     document.getElementById('fileSize').textContent = formatFileSize(file.size);
-                    
+
                     showToast('文件已加载：' + file.name, 'success');
                 };
-                
+
                 reader.readAsArrayBuffer(file);
             }
         }
@@ -817,12 +856,12 @@ print("✅ 可视化环境就绪")
         // ==================== 分析需求 ====================
         async function analyzeRequest() {
             const request = document.getElementById('userRequest').value.trim();
-            
+
             if (!request) {
                 showToast('请输入分析需求', 'error');
                 return;
             }
-            
+
             if (!currentFile) {
                 showToast('请先上传 Excel 文件', 'error');
                 return;
@@ -854,30 +893,30 @@ print("✅ 可视化环境就绪")
 请生成对应的分析代码。`;
 
             const response = await callDeepSeek(prompt, systemPrompt);
-            
+
             if (response) {
                 try {
                     // 解析 AI 返回的 JSON
                     const result = JSON.parse(response);
                     generatedPythonCode = result.code;
-                    
+
                     // 显示代码（如果需要）
                     document.getElementById('generatedCode').textContent = generatedPythonCode;
                     document.getElementById('showCodeBtn').disabled = false;
-                    
+
                     // 执行代码
                     await executePythonCode(generatedPythonCode);
-                    
+
                     // 显示结论
                     document.getElementById('conclusionText').textContent = result.conclusion;
                     document.getElementById('resultsSection').style.display = 'block';
-                    
+
                     if (result.modified_file) {
                         document.getElementById('downloadSection').style.display = 'flex';
                     }
-                    
+
                     showToast('分析完成', 'success');
-                    
+
                 } catch (error) {
                     console.error('解析失败:', error);
                     showToast('AI 返回格式错误', 'error');
@@ -893,7 +932,7 @@ print("✅ 可视化环境就绪")
                 // 将文件写入 Pyodide 虚拟文件系统
                 const filename = currentFile.name;
                 pyodide.FS.writeFile(filename, currentFileData);
-                
+
                 // 执行代码
                 const result = pyodide.runPython(`
 import pandas as pd
@@ -910,7 +949,7 @@ with redirect_stdout(output):
     try:
         # 执行用户代码
 ${code.split('\n').map(line => '        ' + line).join('\n')}
-        
+
         # 收集图表
         charts = []
         for i, fig in enumerate(plt.get_fignums()):
@@ -924,7 +963,7 @@ ${code.split('\n').map(line => '        ' + line).join('\n')}
                 'image': img_base64
             })
             plt.close()
-        
+
         result = {
             'output': output.getvalue(),
             'charts': charts
@@ -937,22 +976,22 @@ ${code.split('\n').map(line => '        ' + line).join('\n')}
 
 json.dumps(result)
                 `);
-                
+
                 analysisResults = JSON.parse(result);
-                
+
                 if (analysisResults.error) {
                     showToast('执行错误：' + analysisResults.error, 'error');
                     return;
                 }
-                
+
                 // 显示输出
                 if (analysisResults.output) {
                     console.log('Python 输出:', analysisResults.output);
                 }
-                
+
                 // 显示图表
                 displayCharts(analysisResults.charts);
-                
+
             } catch (error) {
                 console.error('执行失败:', error);
                 showToast('代码执行失败：' + error.message, 'error');
@@ -963,23 +1002,23 @@ json.dumps(result)
         function displayCharts(charts) {
             const grid = document.getElementById('visualizationGrid');
             grid.innerHTML = '';
-            
+
             if (charts && charts.length > 0) {
                 charts.forEach((chart, index) => {
                     const card = document.createElement('div');
                     card.className = 'viz-card';
                     card.innerHTML = `
                         <div class="viz-title">
-                            <i class="fas fa-chart-line" style="color: #2563eb;"></i>
+                            <i class="fas fa-chart-line" style="color: var(--accent);"></i>
                             ${chart.title}
                         </div>
-                        <img src="data:image/png;base64,${chart.image}" 
-                             style="width: 100%; height: auto; border-radius: 8px;">
+                        <img src="data:image/png;base64,${chart.image}"
+                             style="width: 100%; height: auto; border-radius: var(--r-md);">
                     `;
                     grid.appendChild(card);
                 });
             } else {
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">暂无可视化图表</div>';
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">暂无可视化图表</div>';
             }
         }
 
@@ -987,7 +1026,7 @@ json.dumps(result)
         function showCode() {
             const codeSection = document.getElementById('codeSection');
             const btn = document.getElementById('showCodeBtn');
-            
+
             if (codeSection.style.display === 'none') {
                 codeSection.style.display = 'block';
                 btn.innerHTML = '<i class="fas fa-eye-slash"></i> 隐藏代码';
@@ -1006,15 +1045,15 @@ json.dumps(result)
         // ==================== 下载文件 ====================
         function downloadModifiedFile() {
             if (!pyodide || !currentFile) return;
-            
+
             try {
                 // 从虚拟文件系统读取修改后的文件
                 const filename = 'processed_' + currentFile.name;
                 const fileData = pyodide.FS.readFile(filename);
-                
+
                 // 创建下载链接
-                const blob = new Blob([fileData], { 
-                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+                const blob = new Blob([fileData], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -1024,7 +1063,7 @@ json.dumps(result)
                 a.click();
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
-                
+
                 showToast('文件下载中...', 'success');
             } catch (error) {
                 showToast('下载失败：' + error.message, 'error');
@@ -1036,9 +1075,9 @@ json.dumps(result)
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.style.display = 'block';
-            toast.style.background = type === 'error' ? '#ef4444' : 
-                                    type === 'success' ? '#10b981' : '#1e293b';
-            
+            toast.style.background = type === 'error' ? 'var(--accent)' :
+                                    type === 'success' ? '#4CAF80' : 'var(--sidebar-bg)';
+
             setTimeout(() => {
                 toast.style.display = 'none';
             }, 3000);
@@ -1049,24 +1088,24 @@ json.dumps(result)
 
         // 拖拽上传支持
         const dropZone = document.getElementById('uploadArea');
-        
+
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropZone.style.borderColor = '#2563eb';
-            dropZone.style.background = '#f8fafc';
+            dropZone.style.borderColor = 'var(--accent)';
+            dropZone.style.background = 'var(--accent-light)';
         });
-        
+
         dropZone.addEventListener('dragleave', (e) => {
             e.preventDefault();
-            dropZone.style.borderColor = '#cbd5e1';
-            dropZone.style.background = 'white';
+            dropZone.style.borderColor = 'var(--border-strong)';
+            dropZone.style.background = 'var(--bg-base)';
         });
-        
+
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            dropZone.style.borderColor = '#cbd5e1';
-            dropZone.style.background = 'white';
-            
+            dropZone.style.borderColor = 'var(--border-strong)';
+            dropZone.style.background = 'var(--bg-base)';
+
             const file = e.dataTransfer.files[0];
             if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls') || file.name.endsWith('.csv'))) {
                 document.getElementById('fileInput').files = e.dataTransfer.files;

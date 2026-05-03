@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "name": "jiandu",
+  "builds": [
+    {
+      "src": "admin-api/**/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "**/*.{html,css,js,png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf}",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/admin-api/$1"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "/admin/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

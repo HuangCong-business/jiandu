@@ -51,11 +51,31 @@ async function ensureFonts() {
         const buffer = await res.arrayBuffer();
         pyodide.FS.writeFile("custom_font.ttf", new Uint8Array(buffer));
         await pyodide.runPythonAsync(`
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
-fm.fontManager.addfont("custom_font.ttf")
-plt.rcParams['font.family'] = fm.FontProperties(fname="custom_font.ttf").get_name()
-plt.rcParams['axes.unicode_minus'] = False
+from matplotlib import font_manager
+
+# 添加自定义字体
+font_manager.fontManager.addfont("custom_font.ttf")
+prop = font_manager.FontProperties(fname="custom_font.ttf")
+font_name = prop.get_name()
+
+# 全局设置：字体 + unicode minus 修复
+plt.rcParams.update({
+    'font.family': font_name,
+    'font.sans-serif': [font_name, 'DejaVu Sans'],
+    'axes.unicode_minus': False,
+    'axes.labelweight': 'normal',
+    'axes.titlesize': 11,
+    'axes.labelsize': 10,
+    'xtick.labelsize': 9,
+    'ytick.labelsize': 9,
+    'legend.fontsize': 9,
+    'figure.titlesize': 12,
+    'font.size': 10
+})
         `);
         fontsOk = true;
         fontBadge.textContent = "汉字引擎：已就绪";
@@ -73,8 +93,12 @@ async function handleRequest() {
     const apiKey = localStorage.getItem('deepseek_api_key');
     const loader = document.getElementById('loader');
     
+    // 调试：输出 API Key 状态
+    console.log("API Key 状态:", apiKey ? "已配置 (前 8 位：" + apiKey.substring(0, 8) + "...)" : "未配置");
+    console.log("所有 localStorage 键:", Object.keys(localStorage));
+    
     if (!apiKey) {
-        return alert("⚠️ 请先在设置页面配置 API Key！\n\n1. 返回首页\n2. 点击左下角'设置'\n3. 填写 DeepSeek API Key 并保存");
+        return alert("⚠️ 请先在设置页面配置 API Key！\n\n1. 返回首页\n2. 点击左下角'设置'\n3. 填写 DeepSeek API Key 并保存\n\n💡 调试提示：按 F12 打开控制台查看详细日志");
     }
     if (fileManager.files.length === 0) {
         return alert("请先上传文件（Excel 或 CSV）");
@@ -243,19 +267,53 @@ async function fetchAI(query, meta, key, error = null) {
                 messages: [
                     {
                         role: "system", 
-                        content: `你是一个 Python 数据专家。
-重要规则：
-1. 读取文件时必须根据文件类型选择函数：
-   - 文件标记为 (EXCEL) 或 (.xlsx) → 使用 find_real_data("文件名")
-   - 文件标记为 (CSV) 或 (.csv) → 使用 read_csv("文件名")
-   - 绝对不能用 read_excel 读取 CSV 文件！
-2. 必须使用 pd.ExcelWriter('final.xlsx', engine='openpyxl') 处理多 Sheet
-3. 图表保存为 c1.png, c2.png 等，并调用 embed_chart("c1.png", "A1") 插入
-4. 输出必须是 JSON 格式：{"code": "python 代码", "explanation": "分析说明", "needs_chart": true/false}
+                        content: `你是一个专业的 Python 数据分析师，擅长商业数据分析和可视化。
 
-示例：
-- df1 = find_real_data("data.xlsx")  # Excel 文件
-- df2 = read_csv("sales.csv")        # CSV 文件`
+【技术规则 - 必须严格遵守】
+1. 文件读取（根据 meta 中的类型标记选择）：
+   - (EXCEL) / .xlsx → find_real_data("文件名")
+   - (CSV) / .csv → read_csv("文件名")
+   - 绝对不能用 pd.read_excel 读 CSV，也不能用 pd.read_csv 读 Excel！
+2. 写入 Excel：pd.ExcelWriter('final.xlsx', engine='openpyxl')
+3. 图表：plt.savefig('c1.png') 保存后用 embed_chart('c1.png', 'A1') 嵌入
+4. 输出格式（必须严格 JSON）：{"code": "python代码", "explanation": "分析说明", "needs_chart": true/false}
+5. **答案优先规则**：当用户问"哪个/哪一天/谁/最高/最低/最大/最小"等具体问题时，必须在 explanation 的**最开头**用一句话给出明确答案，格式如：「答案：2024年3月15日（价格 128.5元）」，然后再写分析说明。图表可以有，但答案必须先文字说清楚。
+
+【常见业务指标 - 理解其含义，不要算错】
+- 毛利率 = (销售收入 - 成本) / 销售收入 × 100%
+- 净利率 = 净利润 / 销售收入 × 100%
+- 同比增长率 = (本期 - 去年同期) / 去年同期 × 100%
+- 环比增长率 = (本期 - 上期) / 上期 × 100%
+- 客单价 = 销售额 / 订单数（或成交笔数）
+- 复购率 = 回头客订单数 / 总订单数 × 100%
+- SKU = 库存量单位，通常对应 "品名/商品名称/产品名称" 列
+- 库存周转率 = 销售成本 / 平均库存
+
+【常用分析模式 - 遇到对应任务时使用】
+- 销售分析：按月/季/年汇总，配合同比环比，生成趋势折线图
+- 分类排名：groupby + sort_values(ascending=False)，柱状图展示 Top N
+- 占比分析：value_counts 或 groupby 后算百分比，饼图展示
+- ABC 分类：按销售额排序，累计占比 0-80% 为 A 类，80-95% 为 B 类，95-100% 为 C 类
+- 用户分层（RFM）：按最近消费(Recency)、消费频率(Frequency)、消费金额(Monetary)打分
+- 相关性分析：两列数值型变量用 df[['col1','col2']].corr()，热力图展示
+- 异常值检测：用 3σ 原则（均值±3倍标准差之外为异常）或 IQR 法
+
+【统计学基础 - 数据探索时优先计算】
+- 均值（mean）、中位数（median）、众数（mode）
+- 标准差（std）：越大说明波动越大
+- 变异系数（CV）= 标准差 / 均值：用于比较不同量纲数据离散程度
+- 偏度（skew）：>0 右偏（少数高值），<0 左偏（少数低值）
+- 峰度（kurtosis）：>0 尖峰（数据集中），<0 平顶（数据分散）
+
+【Python 代码习惯】
+- 数据清洗：dropna / fillna / replace / astype 转换类型
+- 日期列：pd.to_datetime(df['date'])，然后 dt.year / dt.month / dt.day 提取
+- 分组聚合：df.groupby('列名').agg({'数值列': ['sum','mean','count']})
+- 透视表：pd.pivot_table(df, values='数值', index='行', columns='列', aggfunc='sum')
+- 排序：sort_values(by='列名', ascending=False) 默认降序
+- 百分比：df['占比'] = df['数值'] / df['数值'].sum() * 100
+
+遇到问题先思考：数据有没有空值？类型对不对？分组键选对了没有？再动手写代码。
                     },
                     {role: "user", content: `任务：${query}\n\n结构上下文：\n${meta}${error ? `\n修正报错：${error}` : ""}`}
                 ],
@@ -312,9 +370,96 @@ function renderOutput(plan) {
             }
         } catch(e){}
     }
-    html += `<button class="btn-run" style="width:100%; margin-top:20px;" onclick="downloadFile()">📥 下载《简牍分析报告》</button>`;
+    
+    // 添加预览按钮和下载按钮
+    html += `<div style="display:flex; gap:12px; margin-top:20px;">
+        <button class="btn-run" style="flex:1; background:#3d5a80;" onclick="previewResult()">👁️ 在线预览报告</button>
+        <button class="btn-run" style="flex:1; background:#059669;" onclick="downloadFile()">📥 下载 Excel 报告</button>
+    </div>`;
     area.innerHTML = html;
 }
+
+// 预览结果（使用 SheetJS 读取 Excel 并显示）
+window.previewResult = async () => {
+    try {
+        const data = pyodide.FS.readFile("final.xlsx");
+        const blob = new Blob([data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+        const arrayBuffer = await blob.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, {type: 'array'});
+        
+        let html = '<div style="padding:15px; background:#f8fafc; border-radius:12px;">';
+        html += '<h3 style="color:#1e293b; margin-bottom:15px; font-size:16px;">📊 报告预览</h3>';
+        
+        // 遍历所有 Sheet
+        workbook.SheetNames.forEach((sheetName, idx) => {
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+            
+            if (jsonData.length === 0) return;
+            
+            html += `<div style="margin-bottom:20px;">`;
+            html += `<div style="background:#3d5a80; color:white; padding:8px 12px; border-radius:8px; font-weight:600; font-size:14px; margin-bottom:10px;">
+                📄 Sheet ${idx + 1}: ${sheetName} (${jsonData.length} 行)</div>`;
+            
+            // 创建表格预览（最多显示前 50 行）
+            const maxRows = Math.min(jsonData.length, 50);
+            html += '<div style="max-height:300px; overflow:auto; border:1px solid #e2e8f0; border-radius:8px;">';
+            html += '<table style="width:100%; border-collapse:collapse; font-size:12px;">';
+            
+            // 表头
+            const headers = jsonData[0] || [];
+            html += '<thead><tr style="background:#f1f5f9; position:sticky; top:0; z-index:10;">';
+            headers.forEach(h => {
+                html += `<th style="padding:8px 12px; text-align:left; border-bottom:2px solid #cbd5e1; color:#1e293b;">${h || ''}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            
+            // 数据行（跳过第一行表头）
+            for (let i = 1; i < maxRows; i++) {
+                const row = jsonData[i] || [];
+                html += '<tr style="background:white;">';
+                row.forEach(cell => {
+                    html += `<td style="padding:8px 12px; border-bottom:1px solid #e2e8f0; color:#475569;">${cell !== undefined ? cell : ''}</td>`;
+                });
+                html += '</tr>';
+            }
+            
+            html += '</tbody></table></div>';
+            
+            if (jsonData.length > 50) {
+                html += `<div style="text-align:center; padding:10px; color:#64748b; font-size:12px;">
+                    ... 共 ${jsonData.length} 行，仅显示前 50 行 ...</div>`;
+            }
+            
+            html += '</div>';
+        });
+        
+        html += '</div>';
+        
+        // 添加关闭按钮
+        html += '<button class="btn-run" style="width:100%; margin-top:15px; background:#64748b;" onclick="closePreview()">✕ 关闭预览</button>';
+        
+        const area = document.getElementById('resultContent');
+        area.innerHTML = html;
+        
+    } catch (e) {
+        console.error("预览失败:", e);
+        alert("预览失败：" + e.message + "\n\n请尝试下载后查看");
+    }
+};
+
+// 关闭预览，恢复原始结果
+window.closePreview = () => {
+    // 重新渲染原始输出
+    const query = document.getElementById('userInput').value;
+    const apiKey = localStorage.getItem('deepseek_api_key');
+    if (!apiKey || !query) {
+        document.getElementById('resultContent').innerHTML = '<div class="welcome-box"><h3 style="color: #1e293b; margin-bottom: 15px;">欢迎使用简牍</h3><p style="color: #64748b; line-height: 1.8;">请上传 Excel 或 CSV 文件，并用日常语言描述您的处理逻辑。</p></div>';
+        return;
+    }
+    // 简单处理：显示提示信息
+    document.getElementById('resultContent').innerHTML = '<div style="padding:20px; text-align:center; color:#64748b;">预览已关闭<br><br><button class="btn-run" onclick="handleRequest()" style="margin-top:15px;">重新分析</button></div>';
+};
 
 window.downloadFile = () => {
     const data = pyodide.FS.readFile("final.xlsx");
