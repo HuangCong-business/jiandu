@@ -8,23 +8,31 @@ let isRunning = false;
 let fontsOk = false;
 const MAX_FIX = 3;
 
-// --- 1. 引擎初始化 (带进度显示) ---
+// --- 1. 引擎初始化 (带进度显示 + CDN 备源) ---
 async function initPyodide() {
     const status = document.getElementById('envStatus');
     const dot = document.getElementById('envDot');
     try {
-        const timeout = setTimeout(() => {
-            status.textContent = "引擎启动过慢，请刷新页面";
-            dot.style.background = "#f43f5e";
-        }, 45000);
+        let timeout = setTimeout(() => {
+            if (status) status.textContent = "引擎启动过慢，请检查网络后刷新";
+            if (dot) dot.style.background = "#f43f5e";
+        }, 90000);
 
         status.textContent = "加载 Pyodide 核心...";
-        pyodide = await loadPyodide({ indexURL: './pyodide/' });
+        // 优先用本地 pyodide（已下载则更快），CDN 作为包加载的 baseUrl
+        pyodide = await loadPyodide({
+            indexURL: './pyodide/',
+            // CDN URL：加载 Python 包（.whl）时走 CDN，解决 Vercel 文件大小限制
+            packageCacheDir: 'https://cdn.jsdelivr.net/pyodide/v0.29.3/full/',
+        });
         
-        status.textContent = "安装数据科学包...";
-        await pyodide.loadPackage(['pandas', 'matplotlib', 'micropip']);
+        status.textContent = "安装数据科学包 (pandas + matplotlib)...";
+        await pyodide.loadPackage(['pandas', 'matplotlib']);
         
-        status.textContent = "配置 Excel 支持...";
+        status.textContent = "安装 micropip...";
+        await pyodide.loadPackage(['micropip']);
+        
+        status.textContent = "配置 Excel 支持 (openpyxl + Pillow)...";
         await pyodide.runPythonAsync(`
 import micropip
 await micropip.install(['openpyxl', 'Pillow'])
@@ -36,8 +44,11 @@ matplotlib.use('Agg')
         status.textContent = "引擎就绪";
         dot.style.background = "#36b37e";
     } catch (e) {
-        status.textContent = "引擎启动失败";
+        clearTimeout(timeout);
+        if (status) status.textContent = "引擎启动失败";
+        if (dot) dot.style.background = "#f43f5e";
         console.error("Pyodide Init Error:", e);
+        alert("引擎启动失败：" + e.message + "\n\n请检查网络连接后刷新页面重试。");
     }
 }
 
